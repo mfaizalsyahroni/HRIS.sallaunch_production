@@ -1,0 +1,155 @@
+/* ============================== */
+/*         CONTAINER              */
+/* ============================== */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ============================== */
+/*              GRID              */
+/* ============================== */
+.news-grid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.news-card {
+    background: linear-gradient(135deg, #eef4ff, #dce8ff); /* sedikit lebih gelap */
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 6px 18px rgba(0, 51, 102, 0.12); /* lebih tegas */
+    border: 1px solid rgba(0, 51, 102, 0.08); /* sedikit lebih terlihat */
+}
+
+.news-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 32px rgba(0, 51, 102, 0.22); /* hover lebih hidup */
+}
+
+.thumb-wrapper img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.news-title {
+    font-size: 17px;
+    margin: 8px;
+    font-weight: 700;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: #073362;
+}
+
+.news-excerpt {
+    font-size: 13px;
+    color: #666;
+    margin: 0 10px 10px;
+}
+
+/* READ MORE HOVER */
+.read-more-hover {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 123, 255, 0.85);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.news-card:hover .read-more-hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* ============================== */
+/*         BIG CARD A4 INLINE     */
+/* ============================== */
+#bigCardContainer {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.big-card-box {
+    width: 90vw;
+    /* ± A4 landscape */
+    max-width: 1200px;
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.35);
+    margin-bottom: 30px;
+}
+
+.big-card-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.big-card-box h2 {
+    margin-bottom: 10px;
+    font-size: 27px;
+}
+
+.big-card-box p {
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+
+.modal-dialog-a4 {
+    max-width: 11.7in;
+    /* Lebar A4 landscape */
+    max-height: 8.3in;
+    /* Tinggi A4 landscape */
+    width: 100%;
+    height: 100%;
+}
+
+.modal-body-a4 {
+    max-height: 7in;
+    /* Ruang untuk scroll, sesuaikan */
+    overflow-y: auto;
+}
+
+.modal {
+    z-index: 9999 !important;
+}
+.modal-backdrop {
+    z-index: 9998 !important;
+}
+
+/*GLOBAL FONT*/
+body, p, .news-excerpt, #modalContent {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Judul card & judul modal */
+.news-title, .modal-title, h1, h2, h3, h4, h5 {
+    font-family: 'Montserrat', sans-serif;
+}
+

@@ -1,0 +1,88 @@
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+
+
+/* Judul */
+.container h1 {
+    margin-bottom: 5px;
+    font-size: 28px;
+    font-weight: bold;
+    color: snow;
+    text-shadow: 2px 2px 4px paleturquoise;
+}
+
+.container h3 {
+
+    color: #FFFFE0;
+    text-shadow: #C0C0C0 1px 1px 2px;
+}
+
+/* Alerts */
+.alert-success {
+    color: #28a745;
+    background: #e8f8ed;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+.alert-rejected {
+    color: #c0392b;
+    background: #fdecea;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+/* Table */
+table.visual {
+    width: 95%;
+    border-collapse: collapse;
+    margin: 0;
+    background: rgba(255,255,255,0.95); /* sedikit transparan */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+}
+
+table.visual th, table.visual td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+table.visual th {
+    background-color: #f39c12;
+    color: white;
+}
+
+table.visual tr:hover td {
+    background: #fafafa;
+}
+
+/* Buttons */
+.btn-approve, .btn-reject, .btn-detail {
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 120px;
+    text-align: center;
+    color: white;
+}
+
+.btn-approve { background: #2ecc71; }
+.btn-approve:hover { background: #27ae60; }
+.btn-reject { background: #e74c3c; }
+.btn-reject:hover { background: #c0392b; }
+.btn-detail { background: #3498db; }
+.btn-detail:hover { background: #2980b9; }

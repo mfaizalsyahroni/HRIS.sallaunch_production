@@ -1,0 +1,135 @@
+body {
+    background: #f8f9fb;
+}
+
+.cctv-card {
+    border: none;
+    border-radius: 14px;
+    background: #ffffff;
+    transition: 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 20px 20px 100px;
+    position: relative;
+    overflow: hidden;
+    /* SUPAYA MONITOR TIDAK KELUAR DARI CARD */
+}
+
+.cctv-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* MONITOR WRAPPER */
+.monitor-wrap {
+    width: 100%;
+    height: 230px;
+    /* lebih kecil agar tidak tembus card */
+    position: relative;
+    margin-top: 15px;
+}
+
+/* BODY MONITOR */
+.monitor {
+    width: 100%;
+    height: 100%;
+    background: #0d0d0d;
+    border-radius: 8px;
+    border: 6px solid #0d0d0d;
+    /* border, bukan padding */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.monitor-screen iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    /* hilangkan gap default inline */
+}
+
+
+
+/* LAYAR */
+.monitor-screen {
+    width: 100%;
+    height: 100%;
+    background: black;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* STAND */
+.monitor-stand {
+    width: 12px;
+    height: 50px;
+    background: #1e1e1e;
+    position: absolute;
+    bottom: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 6px;
+}
+
+/* BASE */
+.monitor-base {
+    width: 130px;
+    height: 16px;
+    background: #1e1e1e;
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 8px;
+}
+
+/* LED STATUS */
+.status-led {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.status-led.online {
+    background: #40ff6f;
+    box-shadow: 0 0 8px #40ff6f;
+}
+
+.status-led.offline {
+    background: #ff4d4d;
+    box-shadow: 0 0 8px #ff4d4d;
+}
+
+.badge-type {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #eef2ff;
+    color: #3f51b5;
+    font-weight: 600;
+}
+
+.cctv-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #212121;
+}
+
+.location-label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .monitor-wrap {
+        height: 180px;
+    }
+}
+
+.badge-type {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+}

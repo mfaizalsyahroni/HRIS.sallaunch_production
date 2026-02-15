@@ -1,0 +1,107 @@
+/* Reset */
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
+
+/* Background dengan overlay */
+body {
+    background-image: url('/img/background/news.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3); /* overlay 30% hitam */
+    z-index: -1;
+}
+
+/* Judul H3 */
+h3 {
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+
+/* Alert sukses */
+.notif-success {
+    background-color: rgb(76, 175, 80);
+    font-style: italic;
+    text-align: center;
+    padding: 10px 20px;
+    margin: 10px auto;
+    border-radius: 5px;
+    color: white;
+    width: fit-content;
+}
+
+/* Container */
+.container {
+    min-height: 100vh;
+    padding-top: 20px;
+}
+
+/* Tombol Add News */
+.container > a.btn-primary {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 20px auto;
+    color: white;
+    text-decoration: none;
+}
+
+/* Table */
+table.visual {
+    width: 95%;
+    border-collapse: collapse;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.95); /* sedikit transparan */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 12px rgba(0,0,0,0.2);
+    border: 1px solid #ccc;
+}
+
+table.visual th {
+    background-color: #f39c12;
+    color: white;
+    padding: 12px;
+    font-size: 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table.visual td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+table.visual tr:hover td {
+    background: #fafafa;
+}
+
+/* Tombol icon */
+.btn-sm i {
+    pointer-events: none;
+    text-shadow: #fafafa;
+}
+
+/* Pagination */
+.pagination {
+    justify-content: center;
+    margin-top: 20px;
+}

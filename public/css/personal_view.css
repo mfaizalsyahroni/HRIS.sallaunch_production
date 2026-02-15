@@ -1,0 +1,93 @@
+/* --- Global Reset & Basic Style --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: #f5f7fa; /* soft grey */
+    color: #2c3e50;
+}
+
+/* Container global spacing */
+.container {
+    padding-top: 20px;
+    padding-bottom: 50px;
+}
+
+/* Header title */
+h2.mb-4 {
+    font-weight: 700;
+    color: #1f2d3d;
+    letter-spacing: 0.5px;
+    margin-bottom: 25px;
+}
+
+/* --- Card utama --- */
+.card {
+    border-radius: 12px;
+    border: 1px solid #e3e3e3;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    transition: 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+/* Jarak antar card */
+.col-md-12 .card {
+    margin-bottom: 20px;
+}
+
+/* Title dalam card */
+.card h4, .card h5 {
+    font-weight: 600;
+    color: #34495e;
+}
+
+/* --- Sub-card (email, phone, address) --- */
+.card.p-3 {
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+}
+
+.card.p-3 h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* --- Input styling --- */
+form .form-control {
+    border-radius: 8px;
+    border: 1px solid #d0d4d8;
+    padding: 10px 12px;
+}
+
+form .form-control:focus {
+    border-color: #4c8bf5;
+    box-shadow: 0 0 6px rgba(76, 139, 245, 0.4);
+}
+
+/* Button */
+.btn-success {
+    border-radius: 8px;
+    padding: 10px 20px;
+}
+
+.btn-danger {
+    border-radius: 8px;
+}
+
+/* --- Profile placeholder box --- */
+.bg-light.border.rounded {
+    border: 2px dashed #ccc !important;
+}
+
+/* Grid spacing */
+.row.mt-3 .col-md-4 {
+    margin-bottom: 15px;
+}

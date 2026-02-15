@@ -1,0 +1,155 @@
+/* RESET */
+*,
+html,
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* BODY BACKGROUND (2 IMAGE + CERAH) */
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            rgba(255, 255, 255, 0.45),
+            rgba(255, 255, 255, 0.45)
+        ),
+        url('../img/home/rm.png');
+
+    background-size: cover;       /* 🔥 FULL SCREEN */
+    background-position: center;  /* tetap center */
+    background-repeat: no-repeat; /* ga diulang */
+    background-attachment: fixed; /* efek wallpaper */
+}
+
+
+
+/* FIX CENTER TANPA FLEX DI BODY */
+.container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* WRAPPER FORM */
+.wrapper {
+    position: relative;
+    width: 120%;
+    max-width: 520px;
+    padding: 40px 30px;
+    border-radius: 10px;
+
+    background-color: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.wrapper {
+    position: relative;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+}
+
+
+.wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('../img/home/roadmap.png') center/contain no-repeat;
+    opacity: 0.15;
+    z-index: 0;
+    pointer-events: none; /* 🔥 FIX */
+}
+
+.form-login,
+.form-group,
+input,
+label,
+button {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* TITLE */
+.title {
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1d1818;
+}
+
+/* FORM */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    display: block;
+    color: #121212;
+    font-weight: bold;
+}
+
+/* INPUT */
+.input-login {
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.input-login:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* BUTTON */
+.button-login {
+    border: none;
+    padding: 10px;
+    font-size: 18px;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.button-login:hover {
+    background-color: #0056b3;
+}
+
+/* NOTIFICATION */
+.notif-login {
+    background-color: tomato;
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    color: white;
+}
+
+/* RESPONSIVE */
+@media (max-width: 576px) {
+    .wrapper {
+        width: 90%;
+        padding: 30px 20px;
+    }
+
+    .title {
+        font-size: 1.6em;
+    }
+}

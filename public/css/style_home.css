@@ -1,0 +1,121 @@
+* html,
+body {
+    margin: 0;
+    padding-bottom: 90px;
+    box-sizing: border-box;
+}
+
+
+.container2 img {
+    width: 100%;
+    height: 250px;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}
+
+
+h4 {
+    color: cornflowerblue !important;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+
+
+.mb {
+    margin-bottom: 4px;
+}
+
+
+.section {
+    margin: 20px 40px;
+}
+
+.section h6 {
+    margin-bottom: 10px;
+}
+
+
+.section .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.btn-group1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px 20px;
+    border-top: 1px solid #ddd;
+    background-color: #fff;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.btn-group1 .home-btn {
+    flex: 1;
+    height: 70px;
+    margin: 0;
+    padding: 5px;
+
+    background-color: transparent;
+}
+
+.btn-group1 .home-btn img {
+    width: 24px;
+}
+
+.btn-group1 .home-btn .mb {
+    font-size: 12px;
+}
+
+
+
+.home-btn {
+    width: 120px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    transition: none;
+}
+
+
+.home-btn img {
+    margin-bottom: 5px;
+}
+
+
+.home-btn span,
+.home-btn div.mb {
+    font-size: 14px;
+    color: #333;
+    display: block;
+}
+
+.idea-main {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.idea-sub {
+    font-size: 9px;
+    opacity: 0.65;
+    line-height: 1.1;
+}
