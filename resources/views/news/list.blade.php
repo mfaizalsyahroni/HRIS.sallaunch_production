@@ -51,7 +51,7 @@
     </div>
 
 
-    <!-- ==============================MODAL BOOTSTRAP=============================== -->
+    <!-- MODAL BOOTSTRAP -->
     <div class="modal fade" id="readMoreModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-a4">
             <div class="modal-content">
@@ -74,7 +74,7 @@
     </div>
 
 
-    <!-- ==============================SCRIPT POPUP=============================== -->
+    <!-- SCRIPT POPUP -->
     <script>
         document.querySelectorAll('.news-card').forEach(card => {
             card.addEventListener('click', function(e) {

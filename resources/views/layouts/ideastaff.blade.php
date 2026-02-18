@@ -29,11 +29,37 @@
             background: #f8f9fa;
         }
 
+        /* TEXT AREA */
         .note-editable {
             font-family: Times New Roman, Calibri, Arial, sans-serif;
             font-size: 12px;
             line-height: 1.6;
-            padding: 20px;
+            padding: 15px;
+        }
+
+        /* LIST FIX */
+        .note-editable ol,
+        .note-editable ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+
+        .note-editable li {
+            margin-bottom: 3px;
+        }
+
+        .note-editable ol li::marker {
+            font-weight: bold;
+        }
+
+        /* hilangkan jarak aneh dari paragraph di dalam list */
+        .note-editable li p {
+            margin: 0;
+        }
+
+        /* optional: rapatkan paragraf biasa */
+        .note-editable p {
+            margin-bottom: 5px;
         }
     </style>
 
@@ -255,8 +281,18 @@
                         console.log('Summernote loaded successfully');
                     },
 
-                    onChange: function(contents) {
-                        console.log('Content changed');
+                    // onChange: function(contents) {
+                    // console.log('Content changed');
+                    // },
+
+                    onChange: function(contents, $editable) {
+
+                        $editable.find('li').each(function() {
+                            if ($(this).text().trim() === '') {
+                                $(this).remove();
+                            }
+                        });
+
                     },
 
                     onImageUpload: function(files) {
@@ -269,9 +305,32 @@
                         console.log('Media deleted:', target[0].src);
                         // Bisa tambahkan ajax hapus file di server jika perlu
                     }
+
+
                 }
 
             });
+            $('.summernote').on('summernote.keydown', function(e) {
+
+                if (e.key === 'Enter') {
+
+                    let selection = window.getSelection();
+                    if (!selection.rangeCount) return;
+
+                    let node = selection.anchorNode;
+
+                    // cari parent LI
+                    let li = $(node).closest('li');
+
+                    if (li.length && li.text().trim() === '') {
+                        document.execCommand('insertParagraph');
+                        e.preventDefault();
+                    }
+
+                }
+
+            });
+
         });
     </script>
 

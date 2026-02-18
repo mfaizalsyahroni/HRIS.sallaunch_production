@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    {{-- Logout di bawah container --}}
+
     <div class="text-center" style="margin-top:-50px;">
         <form action="{{ route('idea.logout') }}" method="POST">
             @csrf

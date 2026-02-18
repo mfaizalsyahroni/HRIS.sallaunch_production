@@ -108,7 +108,7 @@ Route::prefix('news')->group(function () {
 
     // List all news
     Route::get('/list', [NewsController::class, 'allNewsList'])->name('news.list');
-    Route::post('/logout', [NewsController::class, 'logout'])->name('news.logout');
+    Route::get('/logout', [NewsController::class, 'logout'])->name('news.logout');
 
 
     // Admin

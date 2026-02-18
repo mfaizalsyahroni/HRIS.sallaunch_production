@@ -1,32 +1,75 @@
 @extends('layouts.app')
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-S...HASH..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
 @section('content')
-<h2>Lead Dashboard - Review Ideas</h2>
+    <div class="container">
 
-@foreach ($ideas as $idea)
-    <div style="border:1px solid #ccc; padding:10px; margin-bottom:20px;">
-        <h3>{{ $idea->title }}</h3>
-        <p>Votes: {{ $idea->votes_count }}</p>
+        <h2 class="mb-4">Program Innovation Lead — Review Ideas</h2>
 
-        <form method="POST" action="{{ route('idea.review', $idea->id) }}">
-            @csrf
+        @if (session('success'))
+            <div class="alert alert-success text-center">
+                {{ session('success') }}
+            </div>
+        @endif
 
-            <label>Business Impact (1-5)</label>
-            <input type="number" name="business_impact" min="1" max="5" required>
+        @foreach ($ideas as $idea)
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
 
-            <label>Feasibility (1-5)</label>
-            <input type="number" name="feasibility" min="1" max="5" required>
+                    <h4>{{ $idea->title }}</h4>
 
-            <label>Sustainability (1-5)</label>
-            <input type="number" name="sustainability" min="1" max="5" required>
+                    <p class="text-muted mb-2">
+                        Votes: <strong>{{ $idea->votes_count }}</strong>
+                    </p>
 
-            <button type="submit">Submit Review</button>
-        </form>
+                    <form method="POST" action="{{ route('idea.review', $idea) }}">
+                        @csrf
+
+                        <div class="row">
+
+                            <div class="col-md-3 mb-2">
+                                <label>Business Impact (1–5)</label>
+                                <input type="number" name="business_impact" class="form-control" min="1"
+                                    max="5" required>
+                            </div>
+
+                            <div class="col-md-3 mb-2">
+                                <label>Feasibility (1–5)</label>
+                                <input type="number" name="feasibility" class="form-control" min="1" max="5"
+                                    required>
+                            </div>
+
+                            <div class="col-md-3 mb-2">
+                                <label>Sustainability (1–5)</label>
+                                <input type="number" name="sustainability" class="form-control" min="1"
+                                    max="5" required>
+                            </div>
+
+                            <div class="col-md-12 mt-2">
+                                <label>Notes (optional)</label>
+                                <textarea name="notes" class="form-control" rows="2" placeholder="Reviewer notes..."></textarea>
+                            </div>
+
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-3">
+                            Submit Review
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+        @endforeach
+
+        <a href="{{ route('idea.winner') }}" class="btn btn-success">
+            See Final Ranking
+        </a>
+
     </div>
-@endforeach
-
-<a href="{{ route('idea.winner') }}">See Final Ranking</a>
-
-
 @endsection

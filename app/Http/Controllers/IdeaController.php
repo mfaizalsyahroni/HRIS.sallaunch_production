@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Idea;
 use App\Models\IdeaVote;
 use App\Models\IdeaReview;
@@ -14,19 +13,18 @@ use Illuminate\Support\Facades\Hash;
 class IdeaController extends Controller
 {
     /*
-    HELPER ROLE CHECK
-     */
-    private function requireRole($role)
+    ROLE GUARD
+    */
+    private function requireRole(string $role)
     {
-        if (session('verified_worker') !== $role) {
+        if (session('worker_role') !== $role) {
             abort(403, 'Unauthorized access');
         }
     }
 
     /*
-    LOGIN / VERIFY
-     */
-
+    LOGIN
+    */
     public function verify()
     {
         return view('idea.verify');
@@ -41,13 +39,21 @@ class IdeaController extends Controller
 
         // ADMIN HRIS
         if ($request->employee_id == 110 && $request->password === 'pw7') {
-            session(['verified_worker' => 'ADMIN_IT_HRIS']);
+            session([
+                'worker_role' => 'ADMIN_IT_HRIS',
+                'worker_id' => null
+            ]);
+
             return redirect()->route('idea.admin.dashboard');
         }
 
-        // PROGRAM INNOVATION LEAD
+        // PROGRAM LEAD
         if ($request->employee_id == 113 && $request->password === 'pw13') {
-            session(['verified_worker' => 'PROGRAM_INNOVATION_LEAD']);
+            session([
+                'worker_role' => 'PROGRAM_INNOVATION_LEAD',
+                'worker_id' => null
+            ]);
+
             return redirect()->route('idea.lead.dashboard');
         }
 
@@ -56,22 +62,26 @@ class IdeaController extends Controller
 
         if (!$worker || !Hash::check($request->password, $worker->password)) {
             return back()->withErrors([
-                'message' => 'Your Employee ID or Password is wrong'
+                'message' => 'Employee ID or password invalid'
             ]);
         }
 
-        session(['verified_worker' => $worker->id]);
+        session([
+            'worker_role' => 'STAFF',
+            'worker_id' => $worker->id
+        ]);
 
         return redirect()->route('idea.staff');
     }
 
+    /*
+    DASHBOARD
+    */
     public function staffDashboard()
     {
-        $userId = session('verified_worker');
+        $workerId = session('worker_id');
 
-        $myIdeas = Idea::where('user_id', $userId)
-            ->latest()
-            ->get();
+        $myIdeas = Idea::where('user_id', $workerId)->latest()->get();
 
         $votingIdeas = Idea::where('status', 'voting')
             ->withCount('votes')
@@ -85,9 +95,7 @@ class IdeaController extends Controller
     {
         $this->requireRole('ADMIN_IT_HRIS');
 
-        $ideas = Idea::withCount('votes')
-            ->latest()
-            ->get();
+        $ideas = Idea::withCount('votes')->latest()->get();
 
         return view('idea.admin.dashboard', compact('ideas'));
     }
@@ -105,11 +113,12 @@ class IdeaController extends Controller
     }
 
     /*
-    IDEA DETAIL & SUBMIT
-     */
+    IDEA
+    */
     public function show(Idea $idea)
     {
         $idea->load('votes', 'reviews');
+
         return view('idea.show', compact('idea'));
     }
 
@@ -120,22 +129,21 @@ class IdeaController extends Controller
             'problem' => 'required|string',
             'solution' => 'required|string',
             'impact' => 'nullable|string',
-            'attachment' => 'nullable|mimes:pdf,doc,docx,ppt,pptx|max:10240',
-            'demo_video' => 'nullable|mimes:mp4,mov,avi|max:20480',
+            'attachment' => 'nullable|file',
+            'demo_video' => 'nullable|file',
         ]);
 
         Idea::create([
-            'user_id' => session('verified_worker'),
+            'user_id' => session('worker_id'),
             'title' => $request->title,
             'problem' => $request->problem,
             'solution' => $request->solution,
             'impact' => $request->impact,
-            'attachment' => $request->attachment,
-            'demo_video' => $request->demo_video,
-            'status' => 'draft',
+            'status' => 'voting',
         ]);
 
-        return back()->with('success', 'Idea berhasil disubmit.');
+        return redirect()->route('idea.staff')
+            ->with('success', 'Idea submitted successfully.');
     }
 
     public function publish(Idea $idea)
@@ -145,37 +153,35 @@ class IdeaController extends Controller
         return back()->with('success', 'Idea masuk fase voting.');
     }
 
-
     /*
     VOTING
-     */
+    */
     public function vote(Idea $idea)
     {
-        $userId = $this->getWorkerId();
+        $workerId = session('worker_id');
 
-        if (!$userId) {
-            return back()->with('error', 'Hanya staff yang bisa voting.');
+        if (!$workerId) {
+            return back()->with('error', 'Only staff can vote.');
         }
 
         if ($idea->status !== 'voting') {
-            return back()->with('error', 'Voting belum dibuka.');
+            return back()->with('error', 'Voting not open.');
         }
 
         IdeaVote::firstOrCreate([
             'idea_id' => $idea->id,
-            'user_id' => $userId,
+            'worker_id' => session('worker_id'),
         ]);
 
-        return back()->with('success', 'Vote berhasil.');
+        return back()->with('vote', 'Vote recorded.');
     }
 
     /*
-    REVIEW & SCORING
-     */
+    REVIEW
+    */
     public function review(Request $request, Idea $idea)
     {
         $this->requireRole('PROGRAM_INNOVATION_LEAD');
-
 
         $request->validate([
             'business_impact' => 'required|integer|min:1|max:5',
@@ -185,11 +191,9 @@ class IdeaController extends Controller
         ]);
 
         IdeaReview::updateOrCreate(
+            ['idea_id' => $idea->id],
             [
-                'idea_id' => $idea->id,
-            ],
-            [
-                'reviewer_id' => -1, // Program Innovation Lead
+                'reviewer_id' => 0,
                 'business_impact' => $request->business_impact,
                 'feasibility' => $request->feasibility,
                 'sustainability' => $request->sustainability,
@@ -199,15 +203,16 @@ class IdeaController extends Controller
 
         $idea->update(['status' => 'reviewed']);
 
-        return back()->with('success', 'Scoring berhasil disimpan.');
+        return back()->with('success', 'Scoring saved.');
     }
 
     /*
-    FINAL RESULT
-     */
+    RESULT
+    */
     public function result(Idea $idea, FinalScoreService $scoring)
     {
         $finalScore = $scoring->calculate($idea);
+
         return view('idea.result', compact('idea', 'finalScore'));
     }
 
@@ -222,22 +227,17 @@ class IdeaController extends Controller
         return view('idea.winner', compact('ranking', 'winner', 'top3'));
     }
 
-    private function getWorkerId()
-    {
-        $id = session('verified_worker');
-        return is_numeric($id) ? $id : null;
-    }
-
+    /*
+    FILE UPLOAD
+    */
     public function upload(Request $request)
     {
         $file = $request->file('file');
         $type = $request->type;
 
-        if ($type == 'image') {
+        if ($type === 'image') {
             $path = $file->store('editor/images', 'public');
-        }
-
-        if ($type == 'video') {
+        } else {
             $path = $file->store('editor/videos', 'public');
         }
 
@@ -246,15 +246,14 @@ class IdeaController extends Controller
         ]);
     }
 
-
+    /*
+    LOGOUT
+    */
     public function logout(Request $request)
     {
-        $request->session()->forget('verified_worker');
+        $request->session()->flush();
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect()->route('home')->with(['message' => "Logout Succesfully"]);
+        return redirect()->route('home')
+            ->with('message', 'Logout successfully');
     }
 }

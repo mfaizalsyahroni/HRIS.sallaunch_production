@@ -2,12 +2,6 @@
 
 
 @section('content')
-    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"> --}}
-    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-        integrity="sha512-S...HASH..." crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
-
-
-
     <div class="container py-4">
 
         <h2 class="mb-4 fw-bold">
@@ -21,6 +15,18 @@
                 <i class="bi bi-check-circle-fill me-2"></i>
                 {{ session('success') }}
             </div>
+        @endif
+
+
+        {{-- ALERT VOTE --}}
+        @if (session('vote'))
+            <div class="alert alert-success" id="notif-vote">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {{ session('vote') }}
+            </div>
+            <script>
+                setTimeout(() => document.getElementById('notif-vote')?.remove(), 8000)
+            </script>
         @endif
 
         {{-- ALERT ERROR --}}
@@ -147,10 +153,14 @@
                             <strong>
                                 <i class="bi bi-flag-fill me-1 text-danger"></i> Status:
                             </strong>
-                            <span class="badge bg-dark">
+                            <span class="badge bg-primary">
                                 {{ ucfirst($idea->status) }}
                             </span>
                         </p>
+
+                        <a href="{{ route('idea.result', $idea) }}" class="btn btn-sm btn-info mt-2">
+                            View Result
+                        </a>
 
                         @if ($idea->attachment)
                             <a href="{{ asset('storage/' . $idea->attachment) }}" target="_blank"
@@ -170,7 +180,7 @@
 
                         <p class="text-muted mt-2 mb-0">
                             <i class="bi bi-calendar-event me-1"></i>
-                            Submitted: {{ $idea->created_at->format('d M Y') }}
+                            Submitted: {{ $idea->created_at->format('d M Y -  h:i A') }}
                         </p>
 
                     </div>
@@ -259,7 +269,4 @@
             </form>
         </div>
     </div>
-
-
-
 @endsection

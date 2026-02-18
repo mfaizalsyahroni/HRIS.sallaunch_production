@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
 class IdeaVote extends Model
 {
     protected $fillable = [
         'idea_id',
-        'user_id',
+        'worker_id',
     ];
 
     public function idea(): BelongsTo
@@ -17,8 +18,8 @@ class IdeaVote extends Model
         return $this->belongsTo(Idea::class);
     }
 
-    public function user(): BelongsTo
+    public function worker(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Worker::class);
     }
 }
