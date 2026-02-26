@@ -26,9 +26,9 @@ class IdeaReview extends Model
         return $this->belongsTo(User::class, 'reviewer_id');
     }
 
-    /* =====================
-     | ACCESSORS
-     ===================== */
+    /*
+    ACCESSORS
+     */
 
     public function getTotalScoreAttribute(): int
     {

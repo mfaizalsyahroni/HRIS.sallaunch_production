@@ -65,6 +65,10 @@
 
     {{-- Bootstrap CSS --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    {{-- jquery --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     {{-- Bootstrap Icons --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
@@ -82,7 +86,7 @@
         @yield('content')
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs4.min.js"></script>
 

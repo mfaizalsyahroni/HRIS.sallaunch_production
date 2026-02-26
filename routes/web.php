@@ -454,6 +454,9 @@ Route::post('/idea/{idea}/vote', [IdeaController::class, 'vote'])
 Route::post('/idea/{idea}/review', [IdeaController::class, 'review'])
     ->name('idea.review');
 
+Route::get('/idea/download/{idea}', [IdeaController::class, 'downloadAttachment'])
+    ->name('idea.download');    
+
 Route::get('/idea/{idea}/result', [IdeaController::class, 'result'])
     ->name('idea.result');    
 

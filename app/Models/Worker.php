@@ -156,4 +156,10 @@ class Worker extends Authenticatable
     {
         return $this->salaryGrade->position ?? $this->role;
     }
+
+
+    // public function ideas()
+    // {
+    //     return $this->hasMany(Idea::class, 'user_id');
+    // }
 }

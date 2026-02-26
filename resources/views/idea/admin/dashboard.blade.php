@@ -1,6 +1,8 @@
 @extends('layouts.ideastaff')
 
 @section('content')
+
+    {{-- compliance --}}
     @php
         $totalIdeas = $ideas->count();
         $draft = $ideas->where('status', 'draft')->count();

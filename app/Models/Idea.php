@@ -26,10 +26,15 @@ class Idea extends Model
     //RELATIONSHIPS
 
 
-    public function worker(): BelongsTo
+    public function worker()
     {
         return $this->belongsTo(Worker::class, 'user_id');
     }
+
+    // public function worker()
+    // {
+    //     return $this->belongsTo(Worker::class, 'user_id', 'id');
+    // }
 
     public function votes(): HasMany
     {
@@ -59,6 +64,12 @@ class Idea extends Model
             2
         );
     }
+
+    // public function getAverageExpertScoreAttribute(): float
+    // {
+    //     // Menggunakan avg() langsung pada kolom hasil perhitungan di database
+    //     return round($this->reviews()->selectRaw('AVG((business_impact + feasibility + sustainability) / 3) as aggregate')->value('aggregate') ?? 0, 2);
+    // }
 
     // HELPER ACCESSOR (Optional Enhancement)
 

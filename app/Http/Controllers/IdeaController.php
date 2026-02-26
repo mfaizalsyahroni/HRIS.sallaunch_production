@@ -9,6 +9,7 @@ use App\Models\Worker;
 use App\Services\FinalScoreService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class IdeaController extends Controller
 {
@@ -69,21 +70,40 @@ class IdeaController extends Controller
         session([
             'worker_role' => 'STAFF',
             'worker_id' => $worker->id
+            // 'worker_id' => $worker->employee_id
         ]);
 
         return redirect()->route('idea.staff');
     }
 
-    /*
-    DASHBOARD
-    */
+    // public function staffDashboard()
+    // {
+    //     $workerId = session('worker_id');
+
+    //     $myIdeas = Idea::where('user_id', $workerId)->latest()->get();
+
+    //     $votingIdeas = Idea::where('status', 'voting')
+    //         ->withCount('votes')
+    //         ->latest()
+    //         ->get();
+
+    //     return view('idea.staff', compact('myIdeas', 'votingIdeas'));
+    // }
+
     public function staffDashboard()
     {
         $workerId = session('worker_id');
 
-        $myIdeas = Idea::where('user_id', $workerId)->latest()->get();
 
-        $votingIdeas = Idea::where('status', 'voting')
+        $myIdeas = Idea::with('worker')
+            ->where('user_id', $workerId)
+            ->latest()
+            ->get();
+
+
+        $votingIdeas = Idea::with('worker')
+            ->where('status', 'voting')
+            ->where('user_id', '!=', $workerId)
             ->withCount('votes')
             ->latest()
             ->get();
@@ -105,6 +125,7 @@ class IdeaController extends Controller
         $this->requireRole('PROGRAM_INNOVATION_LEAD');
 
         $ideas = Idea::whereIn('status', ['voting', 'reviewed'])
+            ->with('worker') // load fullname + employee_id
             ->withCount('votes')
             ->latest()
             ->get();
@@ -112,14 +133,22 @@ class IdeaController extends Controller
         return view('idea.lead.dashboard', compact('ideas'));
     }
 
-    /*
-    IDEA
-    */
+
+    // public function show(Idea $idea)
+    // {
+    //     $idea->load('votes', 'reviews');
+
+    //     return view('idea.show', compact('idea'));
+    // }
+
     public function show(Idea $idea)
     {
         $idea->load('votes', 'reviews');
 
-        return view('idea.show', compact('idea'));
+        $fileUrl = $idea->attachment ? asset('storage/' . $idea->attachment) : null;
+        $fileExtension = $idea->attachment ? strtolower(pathinfo($idea->attachment, PATHINFO_EXTENSION)) : null;
+
+        return view('idea.show', compact('idea', 'fileUrl', 'fileExtension'));
     }
 
     public function store(Request $request)
@@ -129,9 +158,26 @@ class IdeaController extends Controller
             'problem' => 'required|string',
             'solution' => 'required|string',
             'impact' => 'nullable|string',
-            'attachment' => 'nullable|file',
-            'demo_video' => 'nullable|file',
+            'attachment' => 'nullable|file|max:51200',
+            'demo_video' => 'nullable|file|max:204800',
         ]);
+
+        $attachmentPath = null;
+        $videoPath = null;
+
+        // ✅ check extension manual
+        if ($request->hasFile('attachment')) {
+
+            $file = $request->file('attachment');
+
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            $attachmentPath = $file->storeAs('attachments', $filename, 'public');
+        }
+
+        if ($request->hasFile('demo_video')) {
+            $videoPath = $request->file('demo_video')->store('videos', 'public');
+        }
 
         Idea::create([
             'user_id' => session('worker_id'),
@@ -139,11 +185,66 @@ class IdeaController extends Controller
             'problem' => $request->problem,
             'solution' => $request->solution,
             'impact' => $request->impact,
+            'attachment' => $attachmentPath,
+            'demo_video' => $videoPath,
             'status' => 'voting',
         ]);
 
         return redirect()->route('idea.staff')
             ->with('success', 'Idea submitted successfully.');
+    }
+
+    // public function downloadAttachment(Idea $idea)
+    // {
+    //     return Storage::disk('public')->download($idea->attachment);
+
+    // }
+
+
+    // public function downloadAttachment(Idea $idea)
+    // {
+    //     $path = storage_path('app/public/' . $idea->attachment);
+
+    //     if (request()->has('download')) {
+    //         return response()->download($path);
+    //     }
+
+    //     return response()->file($path);
+    // }
+
+
+    public function downloadAttachment(Idea $idea)
+    {
+        $path = storage_path('app/public/' . $idea->attachment);
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        $filename = basename($path);
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        if (request()->has('download')) {
+            return response()->download($path, $filename);
+        }
+
+        $previewable = ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+        if (in_array($extension, $previewable)) {
+            return response()->file($path);
+        }
+
+        $office = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+
+        if (in_array($extension, $office)) {
+            $url = asset('storage/' . $idea->attachment);
+
+            return redirect()->away(
+                'https://view.officeapps.live.com/op/view.aspx?src=' . urlencode($url)
+            );
+        }
+
+        return response()->download($path, $filename);
     }
 
     public function publish(Idea $idea)
@@ -166,6 +267,11 @@ class IdeaController extends Controller
 
         if ($idea->status !== 'voting') {
             return back()->with('error', 'Voting not open.');
+        }
+
+        // You are not allowed to vote for your own idea
+        if ($idea->user_id == $workerId) {
+            return back()->with('error', 'You cannot vote your own idea.');
         }
 
         IdeaVote::firstOrCreate([
@@ -193,7 +299,7 @@ class IdeaController extends Controller
         IdeaReview::updateOrCreate(
             ['idea_id' => $idea->id],
             [
-                'reviewer_id' => 0,
+                'reviewer_id' => session('worker_id'),
                 'business_impact' => $request->business_impact,
                 'feasibility' => $request->feasibility,
                 'sustainability' => $request->sustainability,

@@ -1,5 +1,8 @@
 @extends('layouts.ideastaff')
 
+{{-- @php
+    use Illuminate\Support\Facades\Storage;
+@endphp --}}
 
 @section('content')
     <div class="container py-4">
@@ -34,6 +37,16 @@
             <div class="alert alert-danger">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                 {{ session('error') }}
+            </div>
+        @endif
+
+
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
             </div>
         @endif
 
@@ -86,7 +99,7 @@
                         <input type="file" name="attachment" class="form-control">
                         <small class="text-muted">
                             <i class="bi bi-file-earmark-text me-1"></i>
-                            PDF, DOC, PPT (Max 10MB)
+                            PDF, DOC, PPT (Max 50MB)
                         </small>
                     </div>
 
@@ -97,7 +110,7 @@
                         <input type="file" name="demo_video" class="form-control">
                         <small class="text-muted">
                             <i class="bi bi-film me-1"></i>
-                            MP4, MOV, AVI (Max 20MB)
+                            MP4, MOV, AVI (Max 200MB)
                         </small>
                     </div>
 
@@ -111,155 +124,254 @@
 
 
 
-        {{--  MY IDEAS  --}}
+        {{-- MY IDEAS --}}
         <div class="card shadow-sm mb-5 border-2">
             <div class="card-header bg-info text-white">
-                <strong>
-                    <i class="bi bi-lightbulb-fill me-2"></i>
-                    My Ideas
-                </strong>
+                <strong>My Ideas</strong>
             </div>
             <div class="card-body">
 
                 @forelse($myIdeas as $idea)
                     <div class="border rounded p-3 mb-3">
 
-                        <h5 class="fw-semibold">
-                            <i class="bi bi-bookmark-star-fill me-2 text-warning"></i>
-                            {{ $idea->title }}
-                        </h5>
+                        <h5>{{ $idea->title }}</h5>
 
-                        {{-- Display Problem with HTML rendering --}}
-                        <div class="mb-2">
-                            <strong><i class="bi bi-exclamation-diamond me-1 text-danger"></i> Problem:</strong>
-                            <div class="ms-3">{!! $idea->problem !!}</div>
-                        </div>
+                        <div>{!! $idea->problem !!}</div>
+                        <div>{!! $idea->solution !!}</div>
 
-                        {{-- Display Solution with HTML rendering --}}
-                        <div class="mb-2">
-                            <strong><i class="bi bi-tools me-1 text-success"></i> Solution:</strong>
-                            <div class="ms-3">{!! $idea->solution !!}</div>
-                        </div>
-
-                        {{-- Display Impact if exists --}}
                         @if ($idea->impact)
-                            <div class="mb-2">
-                                <strong><i class="bi bi-graph-up-arrow me-1 text-info"></i> Impact:</strong>
-                                <div class="ms-3">{!! $idea->impact !!}</div>
-                            </div>
+                            <div>{!! $idea->impact !!}</div>
                         @endif
 
-                        <p class="mb-1">
-                            <strong>
-                                <i class="bi bi-flag-fill me-1 text-danger"></i> Status:
-                            </strong>
-                            <span class="badge bg-primary">
-                                {{ ucfirst($idea->status) }}
-                            </span>
-                        </p>
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                Submitted {{ $idea->created_at->format('d M Y H:i A') }}
+                            </small>
+                        </div>
 
-                        <a href="{{ route('idea.result', $idea) }}" class="btn btn-sm btn-info mt-2">
+                        <button type="button" onclick="location.href='{{ route('idea.result', $idea) }}'"
+                            class="btn btn-sm btn-info">
                             View Result
-                        </a>
+                        </button>
 
-                        @if ($idea->attachment)
-                            <a href="{{ asset('storage/' . $idea->attachment) }}" target="_blank"
-                                class="btn btn-sm btn-outline-primary me-2">
-                                <i class="bi bi-paperclip me-1"></i>
-                                View Attachment
-                            </a>
-                        @endif
+                        <div class="d-flex flex-wrap mt-2" style="gap: 16px;">
 
-                        @if ($idea->demo_video)
-                            <a href="{{ asset('storage/' . $idea->demo_video) }}" target="_blank"
-                                class="btn btn-sm btn-outline-success">
-                                <i class="bi bi-play-circle me-1"></i>
-                                View Demo Video
-                            </a>
-                        @endif
+                            {{-- ATTACHMENT --}}
+                            @if ($idea->attachment)
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal"
+                                    data-target="#attachmentModal{{ $idea->id }}">
+                                    <i class="bi bi-eye me-1"></i>
+                                    View Attachment
+                                </button>
 
-                        <p class="text-muted mt-2 mb-0">
-                            <i class="bi bi-calendar-event me-1"></i>
-                            Submitted: {{ $idea->created_at->format('d M Y -  h:i A') }}
-                        </p>
+                                <a href="{{ route('idea.download', [$idea, 'download']) }}"
+                                    class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-download me-1"></i>
+                                    Download
+                                </a>
+
+                                {{-- MODAL ATTACHMENT --}}
+                                <div class="modal fade" id="attachmentModal{{ $idea->id }}" tabindex="-1"
+                                    role="dialog" aria-labelledby="attachmentModalLabel{{ $idea->id }}"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="attachmentModalLabel{{ $idea->id }}">
+                                                    Attachment Preview
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body text-center">
+                                                @php
+                                                    $fileUrl = Storage::url($idea->attachment);
+                                                    $ext = strtolower(pathinfo($idea->attachment, PATHINFO_EXTENSION));
+                                                @endphp
+
+                                                @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                                    <img src="{{ $fileUrl }}" class="img-fluid rounded">
+                                                @elseif($ext === 'pdf')
+                                                    <iframe src="{{ $fileUrl }}" width="100%" height="600"
+                                                        style="border:none;"></iframe>
+                                                @elseif(in_array($ext, ['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx']))
+                                                    <p class="text-muted">
+                                                        Dokumen {{ strtoupper($ext) }} tidak bisa di-preview di localhost.
+                                                    </p>
+                                                    <a href="{{ $fileUrl }}" class="btn btn-primary" download>
+                                                        <i class="bi bi-download"></i> Download untuk Melihat
+                                                    </a>
+                                                    <hr>
+                                                    <small class="text-muted">Preview online (HTTPS server publik):</small>
+                                                    <iframe
+                                                        src="https://view.officeapps.live.com/op/view.aspx?src={{ urlencode(asset('storage/' . $idea->attachment)) }}"
+                                                        width="100%" height="400" frameborder="0"></iframe>
+                                                @else
+                                                    <p class="text-warning">Format file tidak didukung.</p>
+                                                    <a href="{{ $fileUrl }}" class="btn btn-warning" download>
+                                                        <i class="bi bi-download"></i> Download
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            {{-- DEMO VIDEO --}}
+                            @if ($idea->demo_video)
+                                <a href="{{ asset('storage/' . $idea->demo_video) }}" target="_blank"
+                                    class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-play-circle me-1"></i> Demo Video
+                                </a>
+                            @endif
+
+                        </div>
 
                     </div>
                 @empty
-                    <div class="alert alert-light border">
-                        <i class="bi bi-info-circle me-2"></i>
-                        You haven't submitted any ideas yet.
-                    </div>
+                    <div class="alert alert-light">No ideas yet</div>
                 @endforelse
 
             </div>
         </div>
 
 
-        {{--  VOTING IDEAS  --}}
+        {{-- VOTING IDEAS --}}
         <div class="card shadow-sm border-2">
-            <div class="card-header bg-warning text-dark">
-                <strong>
-                    <i class="bi bi-bar-chart-fill me-2"></i>
-                    Ideas in Voting Phase
-                </strong>
+            <div class="card-header bg-warning">
+                <strong>Ideas in Voting Phase</strong>
             </div>
             <div class="card-body">
 
                 @forelse($votingIdeas as $idea)
                     <div class="border rounded p-3 mb-3">
 
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h6 class="fw-semibold mb-1">
-                                <i class="bi bi-lightbulb me-2 text-primary"></i>
-                                {{ $idea->title }}
-                            </h6>
+                        <div class="d-flex justify-content-between">
+
+                            <h6>{{ $idea->title }}</h6>
 
                             <form action="{{ route('idea.vote', $idea->id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-warning btn-sm">
-                                    <i class="bi bi-hand-thumbs-up-fill me-1"></i>
-                                    Vote
-                                </button>
+                                <button class="btn btn-warning btn-sm">Vote</button>
                             </form>
+
                         </div>
 
-                        {{-- Display Problem with HTML rendering --}}
-                        <div class="mb-2">
-                            <strong><i class="bi bi-exclamation-diamond me-1 text-danger"></i> Problem:</strong>
-                            <div class="ms-3">{!! $idea->problem !!}</div>
-                        </div>
+                        <div>{!! $idea->problem !!}</div>
+                        <div>{!! $idea->solution !!}</div>
 
-                        {{-- Display Solution with HTML rendering --}}
-                        <div class="mb-2">
-                            <strong><i class="bi bi-tools me-1 text-success"></i> Solution:</strong>
-                            <div class="ms-3">{!! $idea->solution !!}</div>
-                        </div>
-
-                        <small class="text-muted">
-                            <i class="bi bi-hand-thumbs-up me-1 text-success"></i>
-                            Total Votes: {{ $idea->votes_count }}
-                        </small>
-
-                        @if ($idea->attachment)
-                            <div class="mt-2">
-                                <a href="{{ asset('storage/' . $idea->attachment) }}" target="_blank"
-                                    class="btn btn-sm btn-outline-primary me-2">
-                                    <i class="bi bi-file-earmark-text me-1"></i>
-                                    View Proposal
-                                </a>
-                            </div>
+                        @if ($idea->impact)
+                            <div>{!! $idea->impact !!}</div>
                         @endif
+
+                        <small>Total Votes: {{ $idea->votes_count }}</small>
+
+                        {{-- my button preview result --}}
+                        <div class="d-flex flex-wrap mt-3" style="gap: 16px;">
+
+                            {{-- @if ($idea->attachment)
+                                <a href="{{ route('idea.download', $idea) }}" target="_blank"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye mr-1"></i>
+                                    View Attachment
+                                </a>
+
+                                <a href="{{ route('idea.download', [$idea, 'download']) }}"
+                                    class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-download mr-1"></i>
+                                    Download
+                                </a>
+                            @endif --}}
+
+                            @if ($idea->attachment)
+                                @php
+                                    $fileUrl = Storage::url($idea->attachment);
+                                    $ext = strtolower(pathinfo($idea->attachment, PATHINFO_EXTENSION));
+                                @endphp
+
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal"
+                                    data-target="#attachmentModal{{ $idea->id }}">
+                                    <i class="bi bi-eye me-1"></i> View Attachment
+                                </button>
+
+                                <div class="modal fade" id="attachmentModal{{ $idea->id }}" tabindex="-1"
+                                    role="dialog" aria-labelledby="attachmentModalLabel{{ $idea->id }}"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Attachment Preview</h5>
+                                                <button type="button" class="close" data-dismiss="modal">
+                                                    <span>&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div id="carousel{{ $idea->id }}" class="carousel slide"
+                                                    data-ride="carousel">
+                                                    <div class="carousel-inner text-center">
+                                                        @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                                            <div class="carousel-item active">
+                                                                <img src="{{ $fileUrl }}"
+                                                                    class="img-fluid rounded mx-auto d-block">
+                                                            </div>
+                                                        @elseif($ext === 'pdf')
+                                                            {{-- PDF hanya tampil 1 halaman, carousel bisa dikembangkan pakai PDF.js --}}
+                                                            <div class="carousel-item active">
+                                                                <iframe src="{{ $fileUrl }}" width="100%"
+                                                                    height="600" style="border:none;"></iframe>
+                                                            </div>
+                                                        @else
+                                                            <div class="carousel-item active">
+                                                                <p class="text-muted">Preview hanya tersedia untuk gambar &
+                                                                    PDF.</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                                        <a class="carousel-control-prev"
+                                                            href="#carousel{{ $idea->id }}" role="button"
+                                                            data-slide="prev">
+                                                            <span class="carousel-control-prev-icon"
+                                                                aria-hidden="true"></span>
+                                                            <span class="sr-only">Previous</span>
+                                                        </a>
+                                                        <a class="carousel-control-next"
+                                                            href="#carousel{{ $idea->id }}" role="button"
+                                                            data-slide="next">
+                                                            <span class="carousel-control-next-icon"
+                                                                aria-hidden="true"></span>
+                                                            <span class="sr-only">Next</span>
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if ($idea->demo_video)
+                                <a href="{{ asset('storage/' . $idea->demo_video) }}" target="_blank"
+                                    class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-play-circle mr-1"></i>
+                                    Demo Video
+                                </a>
+                            @endif
+
+                        </div>
 
                     </div>
                 @empty
-                    <div class="alert alert-light border">
-                        <i class="bi bi-exclamation-circle me-2"></i>
-                        No ideas currently in voting.
-                    </div>
+                    <div class="alert alert-light">No voting ideas</div>
                 @endforelse
 
             </div>
         </div>
+
+
         <div class="text-center my-3">
             <form action="{{ route('idea.logout') }}" method="POST">
                 @csrf
