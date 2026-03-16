@@ -25,13 +25,13 @@ return new class extends Migration {
             // ✅ DATA LEMBUR
             $table->date('overtime_date');
 
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->timestamp('start_time');
+            $table->time('end_time')->nullable();
 
             $table->decimal('actual_hours', 8, 2)->nullable();
-            $table->decimal('total_work_hours', 8, 2);
-            $table->decimal('overtime_hourly_wage', 15, 2);
-            $table->decimal('total_payment', 15, 2);
+            $table->decimal('total_work_hours', 8, 2)->nullable();
+            $table->decimal('overtime_hourly_wage', 15, 2)->nullable();
+            $table->decimal('total_payment', 15, 2)->nullable();
 
             $table->text('notes')->nullable();
 

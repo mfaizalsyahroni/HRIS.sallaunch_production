@@ -254,4 +254,14 @@
 
         </div>
     </div>
+
+    {{-- LOGOUT --}}
+    <div class="d-flex justify-content-center my-4">
+        <form action="{{ route('overtime.logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-outline-danger px-4">
+                <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+            </button>
+        </form>
+    </div>
 @endsection

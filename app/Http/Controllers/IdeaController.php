@@ -76,19 +76,6 @@ class IdeaController extends Controller
         return redirect()->route('idea.staff');
     }
 
-    // public function staffDashboard()
-    // {
-    //     $workerId = session('worker_id');
-
-    //     $myIdeas = Idea::where('user_id', $workerId)->latest()->get();
-
-    //     $votingIdeas = Idea::where('status', 'voting')
-    //         ->withCount('votes')
-    //         ->latest()
-    //         ->get();
-
-    //     return view('idea.staff', compact('myIdeas', 'votingIdeas'));
-    // }
 
     public function staffDashboard()
     {
@@ -111,14 +98,87 @@ class IdeaController extends Controller
         return view('idea.staff', compact('myIdeas', 'votingIdeas'));
     }
 
+
     public function adminDashboard()
     {
         $this->requireRole('ADMIN_IT_HRIS');
 
-        $ideas = Idea::withCount('votes')->latest()->get();
+        $ideas = Idea::with(['worker'])
+            ->withCount('votes')
+            ->latest()
+            ->get();
 
-        return view('idea.admin.dashboard', compact('ideas'));
+        $totalIdeas = $ideas->count();
+        $draft = $ideas->where('status', 'draft')->count();
+        $voting = $ideas->where('status', 'voting')->count();
+        $reviewed = $ideas->where('status', 'reviewed')->count();
+
+        $topIdea = Idea::with('worker')
+            ->withCount('votes')
+            ->orderByDesc('votes_count')
+            ->latest()
+            ->first();
+
+
+
+        // Total Employee
+        $totalWorkers = Worker::count();
+
+
+        // Total Employee who have ever voted
+        $workersVoted = IdeaVote::distinct('worker_id')
+            ->count('worker_id');
+
+
+        // Employees who have not voted at all
+        // $workersNotVoted = Worker::whereNotIn(
+        //     'id',
+        //     IdeaVote::pluck('worker_id')
+        // )->get();
+
+        $votedWorkers = IdeaVote::pluck('worker_id');
+        $ideaOwners = Idea::pluck('user_id');
+
+        $workersNotVoted = Worker::whereNotIn('id', $votedWorkers)
+            ->whereNotIn('id', $ideaOwners)
+            ->get();
+
+        $notVotedCount = $workersNotVoted->count();
+
+        $rate = $totalWorkers > 0
+            ? round(($workersVoted / $totalWorkers) * 100)
+            : 0;
+
+        $lowEngagement = $rate < 60;
+
+        // SEND TO VIEW
+        return view('idea.admin.dashboard', [
+            'ideas' => $ideas,
+            'totalIdeas' => $totalIdeas,
+            'draft' => $draft,
+            'voting' => $voting,
+            'reviewed' => $reviewed,
+            'topIdea' => $topIdea,
+            'totalWorkers' => $totalWorkers,
+            'workersVoted' => $workersVoted,
+            'workersNotVoted' => $workersNotVoted,
+            'notVotedCount' => $notVotedCount,
+            'rate' => $rate,
+            'lowEngagement' => $lowEngagement,
+        ]);
     }
+
+
+
+    public function sendAlert($workerId)
+    {
+        session()->flash('alert_message', 'You have not voted yet. Please participate.');
+
+        return redirect()->back()->with('success', 'Alert sent successfully');
+    }
+
+
+
 
     public function leadDashboard()
     {

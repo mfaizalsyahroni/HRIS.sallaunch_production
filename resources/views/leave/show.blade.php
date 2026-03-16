@@ -13,7 +13,7 @@
         {{-- Tampilkan data leave, sinkron dengan model --}}
         <p><strong>Name:</strong> {{ $leave->fullname }}</p> {{-- Asumsikan field name ada di Worker --}}
         <p><strong>Employee ID:</strong> {{ $leave->employee_id }}</p>
-        <p><strong>Leave Type:</strong> {{ $leave->leave_types }}</p>
+        <p><strong>Leave Type:</strong> {{ $leave->leave_type }}</p>
         <p><strong>Start Date:</strong> {{ $leave->start_date }}</p> {{-- Akan format d-m-Y otomatis --}}
         <p><strong>End Date:</strong> {{ $leave->end_date }}</p> {{-- Akan format d-m-Y otomatis --}}
         <p><strong>Reason:</strong> {{ $leave->leave_reason }}</p>

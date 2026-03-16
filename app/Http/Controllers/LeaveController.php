@@ -17,10 +17,10 @@ class LeaveController extends Controller
     /*
     1. FORM VERIFIKASI USER
      */
-public function create()
-{
-    return view('leave.create');
-}
+    public function create()
+    {
+        return view('leave.create');
+    }
 
 
 
@@ -40,6 +40,17 @@ public function create()
 
         if (!$worker || !Hash::check($request->password, $worker->password)) {
             return redirect()->back()->with('message1', 'Data tidak valid');
+        }
+
+        // CHECK WHETHER THERE IS ALREADY LEAVE
+        $existingLeave = Leave::where('employee_id', $worker->employee_id)
+            ->whereIn('status', ['pending', 'approved']) // cari yang masih aktif
+            ->first();
+
+        // If there is already leave that is pending or approved, directly direct to the show page    
+        if ($existingLeave) {
+            return redirect()->route('leave.show', $existingLeave->id)
+                ->with('info', 'Anda sudah memiliki cuti yang belum selesai.');
         }
 
         // Simpan session
@@ -89,11 +100,12 @@ public function create()
         if (!$workerData) {
             return redirect()->route('leave.create')
                 ->withErrors(['error' => 'Session Verification is not found 404.']);
-
         }
 
+
+
         $request->validate([
-            'leave_types' => 'required|string',
+            'leave_type' => 'required|string',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date',
             'leave_reason' => 'required|string',
@@ -106,15 +118,12 @@ public function create()
             'fullname' => $workerData['fullname'],
             'employee_id' => $workerData['employee_id'],
             'role' => $workerData['role'],
-            'password' => '-',
-            'leave_types' => $request->leave_types,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'leave_type' => $request->leave_type,
+            'start_date' => $start,
+            'end_date' => $end,
             'leave_reason' => $request->leave_reason,
             'status' => 'pending',
         ]);
-
-        session()->forget(['verified_worker']);
 
         return redirect()->route('leave.show', $leave->id)
             ->with('message', 'Leave request submitted successfully! Waiting for approval.');
@@ -190,7 +199,7 @@ public function create()
         $leave = Leave::findOrFail($id);
         $leave->update(['status' => 'approved']);
 
-        session()->forget('verified_worker');
+        // session()->forget('verified_worker');
 
         return redirect()->back()->with('success', 'Cuti berhasil disetujui.✅');
     }
@@ -200,7 +209,7 @@ public function create()
         $leave = Leave::findOrFail($id);
         $leave->update(['status' => 'rejected']);
 
-        session()->forget('verified_worker');
+        // session()->forget('verified_worker');
 
         return redirect()->back()->with('rejected', 'Cuti berhasil ditolak.❌');
     }

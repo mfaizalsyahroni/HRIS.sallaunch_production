@@ -55,6 +55,12 @@ Route::get('new_employee/create', [WorkerController::class, 'create'])
 Route::post('/workers', [WorkerController::class, 'store'])
     ->name('workers.store');
 
+Route::get('new_employee/salary/{worker}', [WorkerController::class, 'salary'])
+    ->name('new_employee.salary');
+
+Route::post('new_employee/salary/{worker}', [WorkerController::class, 'storeSalary'])
+    ->name('new_employee.salary.store');
+
 Route::get('new_employee/profile/{worker}', [WorkerController::class, 'profile'])
     ->name('new_employee.profile');
 
@@ -68,10 +74,16 @@ Route::put('/workers/{employee_id}', [WorkerController::class, 'update'])
     ->name('workers.update');
 
 Route::delete('/workers/{employee_id}', [WorkerController::class, 'destroy'])
-    ->name('workers.destroy');    
+    ->name('workers.destroy');
+
 
 Route::post('new_employee/logout', [WorkerController::class, 'logout'])
     ->name('new_employee.logout');
+
+
+
+
+
 
 // 1. HRIS ADMIN - without auth middleware (direct access)
 Route::get('/leave/admin', [LeaveController::class, 'adminIndex'])->name('leave.admin');
@@ -84,7 +96,7 @@ Route::post('/leave/verify', [LeaveController::class, 'verifyWorker'])->name('le
 Route::get('/leave/next', [LeaveController::class, 'next'])->name('leave.next');
 Route::post('/leave/store', [LeaveController::class, 'store'])->name('leave.store');
 
-Route::get('/leave/logout', [LeaveController::class, 'logout'])
+Route::post('/leave/logout', [LeaveController::class, 'logout'])
     ->name('leave.logout');
 
 // 3. CLEAR SESSION - must be above dynamic routes to avoid conflict
@@ -313,23 +325,17 @@ Route::post('/suggestions/{id}/feedback', [EmployeeSuggestionController::class, 
 // OVERTIME
 
 // VERIFY
-Route::get('/overtime/verify', [OvertimeController::class, 'verify'])->name('overtime.verify');
-Route::post('/overtime/verify', [OvertimeController::class, 'verifyWorker'])->name('overtime.verifyWorker');
+Route::prefix('overtime')->group(function () {
+    Route::get('/verify', [OvertimeController::class, 'verify'])->name('overtime.verify');
+    Route::post('/verify', [OvertimeController::class, 'verifyWorker'])->name('overtime.verifyWorker');
+    Route::get('/list', [OvertimeController::class, 'listOvertime'])->name('overtime.list');
+    Route::get('/admin/dashboard', [OvertimeController::class, 'adminDashboard'])->name('overtime.admin.dashboard');
 
-Route::get('/overtime/admin/dashboard', [OvertimeController::class, 'adminDashboard'])
-    ->name('overtime.admin.dashboard');
-
-Route::get('/overtime/list', [OvertimeController::class, 'listOvertime'])
-    ->name('overtime.list');
-
-Route::post('/overtime/start', [OvertimeController::class, 'start'])
-    ->name('overtime.start');
-
-Route::post('/overtime/finish', [OvertimeController::class, 'finish'])
-    ->name('overtime.finish');
-
-Route::post('/overtime/logout', [OvertimeController::class, 'logout'])
-    ->name('overtime.logout');
+    // Pastikan ini POST
+    Route::post('/start', [OvertimeController::class, 'start'])->name('overtime.start');
+    Route::post('/finish', [OvertimeController::class, 'finish'])->name('overtime.finish');
+    Route::post('/logout', [OvertimeController::class, 'logout'])->name('overtime.logout');
+});
 
 
 
@@ -356,6 +362,9 @@ Route::get('/payroll/salary', [PayrollController::class, 'salary'])
 //  Selected Month 
 Route::post('/payroll/generate', [PayrollController::class, 'generatePayroll'])
     ->name('payroll.generate');
+
+Route::post('/payroll/regenerate', [PayrollController::class, 'regeneratePayroll'])
+    ->name('payroll.regenerate');
 
 Route::post('/payroll/logout', [PayrollController::class, 'logout'])
     ->name('payroll.logout');
@@ -439,7 +448,7 @@ Route::get('/admin/dashboard', [IdeaController::class, 'adminDashboard'])
     ->name('idea.admin.dashboard');
 
 Route::get('/lead/dashboard', [IdeaController::class, 'leadDashboard'])
-    ->name('idea.lead.dashboard'); 
+    ->name('idea.lead.dashboard');
 
 Route::post('/idea/store', [IdeaController::class, 'store'])
     ->name('idea.store');
@@ -455,21 +464,21 @@ Route::post('/idea/{idea}/review', [IdeaController::class, 'review'])
     ->name('idea.review');
 
 Route::get('/idea/download/{idea}', [IdeaController::class, 'downloadAttachment'])
-    ->name('idea.download');    
+    ->name('idea.download');
 
 Route::get('/idea/{idea}/result', [IdeaController::class, 'result'])
-    ->name('idea.result');    
+    ->name('idea.result');
 
 Route::get('/winner', [IdeaController::class, 'winner'])
     ->name('idea.winner');
 
 
-Route::post('/editor/upload', [IdeaController::class, 'upload']);    
+Route::post('/editor/upload', [IdeaController::class, 'upload']);
 
 Route::post('/idea/logout', [IdeaController::class, 'logout'])
-    ->name('idea.logout');    
-    
-    
+    ->name('idea.logout');
+
+
 
 
 // Other static routes

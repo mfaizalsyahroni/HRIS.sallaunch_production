@@ -57,7 +57,7 @@
                 {{-- try with forelse because, there is a message when the data is empty --}}
                 @forelse ($overtimes as $overtime)
                     <tr>
-                        <td>{{ $overtime->worker->employee_id }}</td>
+                        <td>{{ $overtime->worker->employee_id ?? '-' }}</td>
                         <td>{{ $overtime->worker->fullname ?? '-' }}</td>
                         <td>{{ $overtime->formatted_overtime_date }}</td>
                         <td>{{ $overtime->start_time ?? '-' }}</td>
@@ -82,6 +82,7 @@
                         <td colspan="5">Data kosong</td>
                     </tr>
                 @endforelse
+            </tbody>    
         </table>
 
         <div class="d-flex justify-content-center mt-4">

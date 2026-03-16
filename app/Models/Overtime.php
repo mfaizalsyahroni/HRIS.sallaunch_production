@@ -32,18 +32,23 @@ class Overtime extends Model
         'notes',
     ];
 
+
+    protected $casts = [
+        'overtime_date' => 'date',
+    ];
+
     // RELATIONSHIP
     public function worker()
     {
-        return $this->belongsTo(Worker::class);
+        return $this->belongsTo(Worker::class, 'worker_id', 'id');
     }
-
     // ACCESSORS
 
     // Format tanggal lembur
     public function getFormattedOvertimeDateAttribute(): string
     {
-        return $this->overtime_date->format('d M Y');
+        return Carbon::parse($this->overtime_date)->format('d M Y');
+
     }
 
     // Format total payment
@@ -81,4 +86,3 @@ class Overtime extends Model
 
 
 }
-

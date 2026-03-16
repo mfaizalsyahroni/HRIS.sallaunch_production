@@ -37,9 +37,20 @@ class SalaryGrade extends Model
         });
     }
 
+    
+    public function getFormattedSalaryAttribute()
+    {
+        if (!$this->basic_salary) {
+            return '-';
+        }
+
+        return 'Rp ' . number_format($this->basic_salary, 0, ',', '.');
+    }
+
+    // SalaryGrade hasMany Workers
     public function workers()
     {
-        return $this->hasMany(Worker::class);
+        return $this->hasMany(Worker::class, 'role', 'position');
     }
 
 

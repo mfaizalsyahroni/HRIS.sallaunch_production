@@ -41,6 +41,13 @@
         @endif
 
 
+        @if (session('alert_message'))
+            <div class="alert alert-warning">
+                {{ session('alert_message') }}
+            </div>
+        @endif
+
+
 
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -164,11 +171,38 @@
                                     View Attachment
                                 </button>
 
-                                <a href="{{ route('idea.download', [$idea, 'download']) }}"
-                                    class="btn btn-sm btn-outline-success">
-                                    <i class="bi bi-download me-1"></i>
-                                    Download
-                                </a>
+
+
+                                @if ($idea->demo_video)
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal"
+                                        data-target="#videoModal{{ $idea->id }}">
+                                        <i class="bi bi-play-circle me-1"></i> Demo Video
+                                    </button>
+
+                                    {{-- Modal khusus Video --}}
+                                    <div class="modal fade" id="videoModal{{ $idea->id }}" tabindex="-1"
+                                        role="dialog">
+                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                            <div class="modal-content bg-dark text-white">
+                                                <div class="modal-header border-0">
+                                                    <h5 class="modal-title">Demo Video: {{ $idea->title }}</h5>
+                                                    <button type="button" class="close text-white" data-dismiss="modal">
+                                                        <span>&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body p-0">
+                                                    <div class="ratio ratio-16x9">
+                                                        <video controls style="width: 100%; max-height: 80vh;">
+                                                            <source src="{{ asset('storage/' . $idea->demo_video) }}"
+                                                                type="video/mp4">
+                                                            Your browser does not support the video tag.
+                                                        </video>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
 
                                 {{-- MODAL ATTACHMENT --}}
                                 <div class="modal fade" id="attachmentModal{{ $idea->id }}" tabindex="-1"
@@ -195,24 +229,51 @@
                                                     <img src="{{ $fileUrl }}" class="img-fluid rounded">
                                                 @elseif($ext === 'pdf')
                                                     <iframe src="{{ $fileUrl }}" width="100%" height="600"
-                                                        style="border:none;"></iframe>
+                                                        style="border:none;">
+                                                    </iframe>
                                                 @elseif(in_array($ext, ['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx']))
-                                                    <p class="text-muted">
-                                                        Dokumen {{ strtoupper($ext) }} tidak bisa di-preview di localhost.
-                                                    </p>
-                                                    <a href="{{ $fileUrl }}" class="btn btn-primary" download>
-                                                        <i class="bi bi-download"></i> Download untuk Melihat
-                                                    </a>
-                                                    <hr>
-                                                    <small class="text-muted">Preview online (HTTPS server publik):</small>
-                                                    <iframe
-                                                        src="https://view.officeapps.live.com/op/view.aspx?src={{ urlencode(asset('storage/' . $idea->attachment)) }}"
-                                                        width="100%" height="400" frameborder="0"></iframe>
-                                                @else
-                                                    <p class="text-warning">Format file tidak didukung.</p>
-                                                    <a href="{{ $fileUrl }}" class="btn btn-warning" download>
-                                                        <i class="bi bi-download"></i> Download
-                                                    </a>
+                                                    <div class="p-4 border rounded bg-light text-center">
+                                                        <i class="bi bi-file-earmark-ppt-fill text-danger"
+                                                            style="font-size: 4rem;">
+                                                        </i>
+
+                                                        <h4 class="mt-3">
+                                                            Document {{ strtoupper($ext) }}
+                                                        </h4>
+
+                                                        <p class="text-muted">
+                                                            This file cannot be previewed directly in the local environment
+                                                            (localhost)
+                                                            .
+                                                        </p>
+
+                                                        <div class="d-grid gap-2 col-6 mx-auto my-4">
+                                                            <a href="{{ $fileUrl }}" class="btn btn-primary btn-lg"
+                                                                download>
+                                                                <i class="bi bi-download"></i> Download to View
+                                                            </a>
+                                                        </div>
+
+                                                        <hr>
+
+                                                        <div class="mt-4">
+                                                            <p class="small text-secondary">
+                                                                <i class="bi bi-info-circle"></i>
+                                                                The automatic preview below only works on servers with a
+                                                                public domain (HTTPS).
+                                                            </p>
+
+                                                            <iframe
+                                                                src="https://view.officeapps.live.com/op/view.aspx?src={{ urlencode(asset('storage/' . $idea->attachment)) }}"
+                                                                width="100%" height="500px" frameborder="0"
+                                                                class="border rounded shadow-sm">
+                                                            </iframe>
+                                                        </div>
+                                                    @else
+                                                        <p class="text-warning">File format is not supported.</p>
+                                                        <a href="{{ $fileUrl }}" class="btn btn-warning" download>
+                                                            <i class="bi bi-download"></i> Download
+                                                        </a>
                                                 @endif
                                             </div>
                                         </div>
@@ -220,13 +281,7 @@
                                 </div>
                             @endif
 
-                            {{-- DEMO VIDEO --}}
-                            @if ($idea->demo_video)
-                                <a href="{{ asset('storage/' . $idea->demo_video) }}" target="_blank"
-                                    class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-play-circle me-1"></i> Demo Video
-                                </a>
-                            @endif
+
 
                         </div>
 
@@ -312,24 +367,35 @@
                                                 <div id="carousel{{ $idea->id }}" class="carousel slide"
                                                     data-ride="carousel">
                                                     <div class="carousel-inner text-center">
+
                                                         @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
                                                             <div class="carousel-item active">
                                                                 <img src="{{ $fileUrl }}"
                                                                     class="img-fluid rounded mx-auto d-block">
                                                             </div>
                                                         @elseif($ext === 'pdf')
-                                                            {{-- PDF hanya tampil 1 halaman, carousel bisa dikembangkan pakai PDF.js --}}
+                                                            {{-- The PDF only displays 1 page, the carousel can be developed using PDF.js --}}
                                                             <div class="carousel-item active">
                                                                 <iframe src="{{ $fileUrl }}" width="100%"
                                                                     height="600" style="border:none;"></iframe>
                                                             </div>
                                                         @else
                                                             <div class="carousel-item active">
-                                                                <p class="text-muted">Preview hanya tersedia untuk gambar &
-                                                                    PDF.</p>
+                                                                <div class="text-center p-5">
+                                                                    <i class="bi bi-file-earmark-zip text-secondary"
+                                                                        style="font-size: 3rem;"></i>
+                                                                    <p class="mt-2">Document <b>.{{ $ext }}</b>
+                                                                        does not support carousel preview.</p>
+                                                                    <a href="{{ $fileUrl }}"
+                                                                        class="btn btn-sm btn-outline-primary"
+                                                                        download>Download File</a>
+                                                                </div>
                                                             </div>
                                                         @endif
+
                                                     </div>
+
+
                                                     @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
                                                         <a class="carousel-control-prev"
                                                             href="#carousel{{ $idea->id }}" role="button"
@@ -354,11 +420,34 @@
                             @endif
 
                             @if ($idea->demo_video)
-                                <a href="{{ asset('storage/' . $idea->demo_video) }}" target="_blank"
-                                    class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-play-circle mr-1"></i>
-                                    Demo Video
-                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal"
+                                    data-target="#videoModal{{ $idea->id }}">
+                                    <i class="bi bi-play-circle me-1"></i> Demo Video
+                                </button>
+
+                                {{-- Modal khusus Video --}}
+                                <div class="modal fade" id="videoModal{{ $idea->id }}" tabindex="-1"
+                                    role="dialog">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content bg-dark text-white">
+                                            <div class="modal-header border-0">
+                                                <h5 class="modal-title">Demo Video: {{ $idea->title }}</h5>
+                                                <button type="button" class="close text-white" data-dismiss="modal">
+                                                    <span>&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body p-0">
+                                                <div class="ratio ratio-16x9">
+                                                    <video controls style="width: 100%; max-height: 80vh;">
+                                                        <source src="{{ asset('storage/' . $idea->demo_video) }}"
+                                                            type="video/mp4">
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @endif
 
                         </div>

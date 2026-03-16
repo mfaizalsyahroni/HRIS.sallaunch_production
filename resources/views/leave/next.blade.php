@@ -36,8 +36,8 @@
         <form action="{{ route('leave.store') }}" method="POST">
             @csrf
             <div class="form-group">
-                <label for="leave_types">Leave Types</label>
-                <select name="leave_types" id="leave_types" required class="input-login">
+                <label for="leave_type">Leave Types</label>
+                <select name="leave_type" id="leave_type" required class="input-login">
                     <option value="Annual Leave">Annual Leave</option>
                     <option value="Sick Leave">Sick Leave</option>
                     <option value="Maternity Leave">Maternity Leave</option>
@@ -58,7 +58,7 @@
 
             <div class="form-group">
                 <label for="leave_reason">Leave Reason</label>
-                <input type="text" name="leave_reason" id="reason-leave" required class="input-login" autocomplete="off" placeholder="Masukan Alasan cuti">
+                <input type="text" name="leave_reason" id="reason-leave" required class="input-login" autocomplete="off" placeholder="Enter the reason leave">
             </div>
 
             <button type="submit" class="button-login">Submit</button>

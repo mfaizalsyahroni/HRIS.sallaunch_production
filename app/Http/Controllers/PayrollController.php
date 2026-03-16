@@ -100,67 +100,82 @@ class PayrollController extends Controller
         return view('payroll.salary', compact('payroll', 'worker'));
     }
 
+    //GENERATE PAYROLL
+
     public function generatePayroll(Request $request, PayrollService $service)
     {
         $month = $request->month;
-        $year = $request->year;
+        $year  = $request->year;
 
+        $exists = Payroll::where('month', $month)
+            ->where('year', $year)
+            ->exists();
+
+        if ($exists) {
+            return back()->with('error', 'Payroll bulan ini sudah ada.');
+        }
+
+        $this->runPayroll($month, $year, $service);
+
+        return redirect()->route('payroll.admin.dashboard', compact('month', 'year'))
+            ->with('success', 'Payroll berhasil digenerate!');
+    }
+
+    // REGENERATE PAYROLL
+
+    public function regeneratePayroll(Request $request, PayrollService $service)
+    {
+        $month = $request->month;
+        $year  = $request->year;
+
+        Payroll::where('month', $month)
+            ->where('year', $year)
+            ->delete();
+
+        $this->runPayroll($month, $year, $service);
+
+        return redirect()->route('payroll.admin.dashboard', compact('month', 'year'))
+            ->with('success', 'Payroll berhasil di-regenerate!');
+    }
+
+    // PAYROLL ENGINE
+
+    private function runPayroll($month, $year, PayrollService $service)
+    {
         $workers = Worker::with('salaryGrade')->get();
 
         foreach ($workers as $worker) {
 
-            if (!$worker->salary_grade_id) {
+            if (!$worker->salaryGrade) {
                 continue;
             }
 
-            // skip kalau payroll employee ini sudah ada
-            $exists = Payroll::where('employee_id', $worker->employee_id)
-                ->where('month', $month)
-                ->where('year', $year)
-                ->first();
-
-            if ($exists)
-                continue;
-
-            // hitung payroll
             $result = $service->calculateMonthly($worker, $month, $year);
 
-            // simpan snapshot payroll
             Payroll::create([
-
-                // worker snapshot
                 'employee_id' => $worker->employee_id,
                 'fullname' => $worker->fullname,
                 'role' => $worker->salaryGrade->position ?? '-',
-                'salary_grade_id' => $worker->salary_grade_id,
-
-                // period
+                'salary_grade_id' => $worker->salaryGrade->id,
                 'month' => $month,
                 'year' => $year,
 
-                // salary
                 'basic_salary' => $result['basic_salary'],
                 'fixed_allowance' => $result['fixed_allowance'],
 
-                // attendance
                 'working_days_in_month' => $result['working_days_in_month'],
                 'present_days' => $result['present_days'],
                 'earned_salary' => $result['earned_salary'],
 
-                // overtime
                 'overtime_hours' => $result['overtime_hours'],
                 'overtime_pay' => $result['overtime_pay'],
 
-                // tax
                 'tax_deduction' => $result['tax_deduction'],
 
-                // totals
                 'total_salary' => $result['total_salary'],
                 'net_salary' => $result['net_salary'],
             ]);
         }
-
-        return back()->with('success', "Payroll berhasil digenerate untuk bulan ini!");
     }
 
     public function logout(Request $request)

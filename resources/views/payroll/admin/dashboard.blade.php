@@ -62,26 +62,34 @@
         {{-- GENERATE PAYROLL BUTTON --}}
         <div class="text-center mb-4">
 
-            <form method="POST" action="{{ route('payroll.generate') }}">
-                @csrf
-
-                <input type="hidden" name="month" value="{{ $month }}">
-                <input type="hidden" name="year" value="{{ $year }}">
-
-                <button class="btn btn-success px-4" {{ $alreadyGenerated ? 'disabled' : '' }}
-                    onclick="return confirm('Generate payroll bulan ini?')">
-
-                    <i class="fa fa-calculator"></i>
-
-                    {{ $alreadyGenerated ? 'Payroll Sudah Digenerate' : 'Generate Payroll' }}
-
+            @if (!$alreadyGenerated)
+                <form method="POST" action="{{ route('payroll.generate') }}">
+                    @csrf
+                    <input type="hidden" name="month" value="{{ $month }}">
+                    <input type="hidden" name="year" value="{{ $year }}">
+                    <button type="submit" class="btn btn-success px-4"
+                        onclick="return confirm('Generate payroll bulan ini?')">
+                        <i class="fa fa-calculator"></i> Generate Payroll
+                    </button>
+                </form>
+            @else
+                <button class="btn btn-success px-4" disabled>
+                    <i class="fa fa-calculator"></i> Payroll Has Been Generated
                 </button>
-            </form>
 
-            @if ($alreadyGenerated)
                 <p class="text-muted mt-2">
-                    Payroll periode ini sudah tersedia dan tidak bisa digenerate ulang.
+                    This period's payroll is already available. Use the Regenerate button to regenerate the payroll.
                 </p>
+
+                <form method="POST" action="{{ route('payroll.regenerate') }}" class="mt-2">
+                    @csrf
+                    <input type="hidden" name="month" value="{{ $month }}">
+                    <input type="hidden" name="year" value="{{ $year }}">
+                    <button type="submit" class="btn btn-warning px-4"
+                        onclick="return confirm('Regenerate akan menghapus data payroll bulan ini. Lanjutkan?')">
+                        <i class="fa fa-refresh"></i> Regenerate Payroll
+                    </button>
+                </form>
             @endif
 
         </div>

@@ -1,79 +1,110 @@
-@extends('layouts.app')
+@extends('layouts.leave')
+
+@section('title', 'Admin Panel: Leave Approval')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/look.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-        integrity="sha512-S...HASH..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <div class=" min-vh-100 w-100 d-flex flex-column align-items-center"
-        style="background: url('{{ asset('img/part/cuti.png') }}') no-repeat center center; 
-            background-size: cover;">
+    {{-- Background Layer --}}
+    <div
+        style="
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background: url('{{ asset('img/part/cuti.png') }}') no-repeat center center;
+        background-size: cover;
+        z-index: -1;
+    ">
+    </div>
 
+    {{-- Content Wrapper --}}
+    <div class="w-100 d-flex flex-column align-items-center" style="min-height: 100vh; padding: 40px 0;">
 
-
-        <div class="container p-0">
-            <h1 class="text-center">Admin Panel: Leave Approval</h1>
-            <h3 class="text-center">Leave Requests for This Month</h3>
+        {{-- Header --}}
+        <div class="container text-center mb-4">
+            <h1 class="text-white py-2 rounded shadow">Admin Panel: Leave Approval</h1>
+            <h3 class="text-warning fw-bold" style="text-shadow: 0 0 10px #ffc107, 0 0 20px #ff9800;">
+                Leave Requests for This Month
+            </h3>
         </div>
 
-        @if (session('success'))
-            <p class="alert-success">{{ session('success') }}</p>
-        @endif
+        {{-- Alerts --}}
+        <div class="container text-center mb-3">
+            @if (session('success'))
+                <div class="alert alert-success d-inline-block">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-        @if (session('rejected'))
-            <p class="alert-rejected">{{ session('rejected') }}</p>
-        @endif
+            @if (session('rejected'))
+                <div class="alert alert-danger d-inline-block">
+                    {{ session('rejected') }}
+                </div>
+            @endif
+        </div>
 
-        <table class="visual">
-            <tr>
-                <th>Employee ID</th>
-                <th>Name</th>
-                <th>Leave Types</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Leave Reason</th>
-                <th>Status</th>
-                <th>Actions</th>
-                <th>Detail</th>
-            </tr>
+        {{-- Table --}}
+        <div class="container table-responsive">
+            <table class="table table-striped table-hover table-bordered align-middle text-center">
+                <thead>
+                    <tr>
+                        <th class="bg-warning text-light">Employee ID</th>
+                        <th class="bg-warning text-light">Name</th>
+                        <th class="bg-warning text-light">Leave Types</th>
+                        <th class="bg-warning text-light">Start Date</th>
+                        <th class="bg-warning text-light">End Date</th>
+                        <th class="bg-warning text-light">Leave Reason</th>
+                        <th class="bg-warning text-light">Status</th>
+                        <th class="bg-warning text-light">Actions</th>
+                        <th class="bg-warning text-light">Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($leaves as $leave)
+                        <tr>
+                            <td>{{ $leave->employee_id }}</td>
+                            <td>{{ $leave->fullname }}</td>
+                            <td>{{ $leave->leave_type }}</td>
+                            <td>{{ $leave->start_date }}</td>
+                            <td>{{ $leave->end_date }}</td>
+                            <td>{{ $leave->leave_reason }}</td>
+                            <td>
+                                @if ($leave->status === 'pending')
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                @elseif ($leave->status === 'approved')
+                                    <span class="badge bg-success">Approved</span>
+                                @elseif ($leave->status === 'rejected')
+                                    <span class="badge bg-danger">Rejected</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if ($leave->status === 'pending')
+                                    <form action="{{ route('leave.approve', $leave->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                    </form>
+                                    <form action="{{ route('leave.reject', $leave->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                    </form>
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('leave.show', $leave->id) }}" class="btn btn-primary btn-sm">Detail</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
 
-            @foreach ($leaves as $leave)
-                <tr>
-                    <td>{{ $leave->employee_id }}</td>
-                    <td>{{ $leave->fullname }}</td>
-                    <td>{{ $leave->leave_types }}</td>
-                    <td>{{ $leave->start_date }}</td>
-                    <td>{{ $leave->end_date }}</td>
-                    <td>{{ $leave->leave_reason }}</td>
-                    <td>{{ ucfirst($leave->status) }}</td>
-
-                    <td>
-                        @if ($leave->status === 'pending')
-                            <form action="{{ route('leave.approve', $leave->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                <button type="submit" class="btn-approve">Approve</button>
-                            </form>
-
-                            <form action="{{ route('leave.reject', $leave->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                <button type="submit" class="btn-reject">Reject</button>
-                            </form>
-                        @else
-                            -
-                        @endif
-                    </td>
-
-                    <td>
-                        <a href="{{ route('leave.show', $leave->id) }}">
-                            <button class="btn-detail">Detail</button>
-                        </a>
-                    </td>
-                </tr>
-            @endforeach
-        </table>
-        <div class="d-flex justify-content-center align-items-center mt-3">
+        {{-- Logout --}}
+        <div class="mt-4 mb-4">
             <form action="{{ route('leave.logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="btn btn-outline-danger px-4 fw-bold">
@@ -84,7 +115,4 @@
 
     </div>
 
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 @endsection

@@ -7,7 +7,7 @@
         integrity="sha512-S...HASH..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <div class="container py-5">
+    <div class="container py-4">
         <div class="card shadow rounded-4 mx-auto" style="max-width: 520px;">
             <div class="card-body p-4">
 
@@ -45,6 +45,11 @@
                     </li>
 
                     <li class="list-group-item">
+                        <strong>Basic Salary</strong><br>
+                        {{ $worker->salaryGrade->formatted_salary }}
+                    </li>
+
+                    <li class="list-group-item">
                         <strong>Status</strong><br>
                         <span class="badge bg-{{ $worker->isActive() ? 'success' : 'secondary' }}">
                             {{ $worker->isActive() ? 'Active' : 'Inactive' }}
@@ -57,12 +62,12 @@
 
 
         <div class="d-flex justify-content-center mt-4">
-        <form action="{{ route('view.allemployee') }}" method="POST">
-            @csrf
-            <button type="submit" class="btn btn-outline-danger px-4">
-                <i class="fa-solid fa-right-from-bracket me-2"></i> View All Employees
-            </button>
-        </form>
+            <form action="{{ route('view.allemployee') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-outline-primary px-4">
+                    <i class="fa-solid fa-right-from-bracket me-2"></i> View All Employees
+                </button>
+            </form>
         </div>
 
         <div class="d-flex justify-content-center mt-4">

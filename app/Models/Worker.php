@@ -81,14 +81,15 @@ class Worker extends Authenticatable
 
 
     // Payroll relation
+// Worker belongsTo SalaryGrade
     public function salaryGrade()
     {
-        return $this->belongsTo(SalaryGrade::class);
+        return $this->belongsTo(SalaryGrade::class, 'role', 'position');
     }
 
     public function overtimes()
     {
-        return $this->hasMany(Overtime::class);
+        return $this->hasMany(Overtime::class, 'worker_id', 'id');
     }
 
 

@@ -42,7 +42,7 @@ class OvertimeController extends Controller
             ]);
         }
 
-        session(['verified_worker' => $worker->id]);
+        session(['verified_worker' => $worker->employee_id]);
         return redirect()->route('overtime.list');
     }
 
@@ -138,10 +138,12 @@ class OvertimeController extends Controller
 
         //worker 
         else {
-            $query->where('worker_id', $session);
-            $worker = Worker::find($session);
+            // FIX: cari by employee_id, bukan id
+            $worker = Worker::where('employee_id', $session)->first();
+            if ($worker) {
+                $query->where('worker_id', $worker->id); // FIX: pakai $worker->id
+            }
         }
-
         return view('overtime.listovertime', [
             'overtimes' => $query->get(),
             'workers' => $workers,
@@ -154,8 +156,10 @@ class OvertimeController extends Controller
     // START OVERTIME
     public function start()
     {
+        // FIX: find by employee_id
         $worker = Worker::with('salaryGrade')
-            ->findOrFail(session('verified_worker'));
+            ->where('employee_id', session('verified_worker'))
+            ->firstOrFail();
 
         // Prevent double overtime
         $active = Overtime::where('worker_id', $worker->id)
@@ -163,7 +167,7 @@ class OvertimeController extends Controller
             ->first();
 
         if ($active) {
-            return back()->withErrors(['Overtime masih berjalan']);
+            return back()->withErrors(['Overtime is still running']);
         }
 
         $today = now()->toDateString();
@@ -186,8 +190,10 @@ class OvertimeController extends Controller
         // Weekend or weekday valid → can start
         Overtime::create([
             'worker_id' => $worker->id,
+            'employee_id' => $worker->employee_id,
+            'fullname' => $worker->fullname,
             'overtime_date' => $today,
-            'start_time' => now(),
+            'start_time' => now()->format('H:i:s'),
         ]);
 
         return back()->with('success', 'Overtime dimulai');
@@ -199,25 +205,45 @@ class OvertimeController extends Controller
     public function finish()
     {
         $worker = Worker::with('salaryGrade')
-            ->findOrFail(session('verified_worker'));
+            ->where('employee_id', session('verified_worker'))
+            ->firstOrFail();
 
         $overtime = Overtime::where('worker_id', $worker->id)
             ->whereNull('end_time')
             ->firstOrFail();
 
-        $start = Carbon::parse($overtime->start_time);
+        // dd([
+        //     'worker_id' => $worker->id,
+        //     'employee_id' => $worker->employee_id,
+        //     'salary_grade_id' => $worker->salary_grade_id,
+        //     'salaryGrade' => $worker->salaryGrade,
+        // ]);
+
+
+
         $end = now();
+        $dateOnly = Carbon::parse($overtime->overtime_date)->format('Y-m-d'); // '2026-03-09'
 
-        // Hitung total jam lembur
-        $totalHours = round($start->diffInMinutes($end) / 60, 2);
+        $start = Carbon::parse($dateOnly . ' ' . $overtime->start_time);   // '2026-03-09 04:16:23'
+        $endFull = Carbon::parse($dateOnly . ' ' . $end->format('H:i:s'));
 
-        // Jam dibayar (HR policy → floor 0.5 jam)
-        // $paidHours = $this->floorToHalfHour($actualHours);
 
-        // Upah per jam dasar
-        $hourlyWage = round($worker->salaryGrade->basic_salary / 173, 2); // 173 jam kerja/bulan
 
-        // Cek weekend
+        // Handle kasus lembur lewat tengah malam
+        if ($endFull->lt($start)) {
+            $endFull->addDay();
+        }
+
+        // Calculate actual overtime hours (raw, in decimal)
+        $actualHours = round($start->diffInMinutes($endFull) / 60, 2);
+
+        // Paid hours: floored to nearest 0.5 per HR policy (e.g. 2.33 → 2.0)
+        $totalHours = $this->floorToHalfHour($actualHours);
+
+        // Base hourly wage: monthly salary ÷ 173 working hours
+        $hourlyWage = round($worker->salaryGrade->basic_salary / 173, 2);
+
+        // Check if overtime falls on a weekend (different rate applies)
         $isWeekend = Carbon::parse($overtime->overtime_date)->isWeekend();
 
 
@@ -233,21 +259,38 @@ class OvertimeController extends Controller
         }
 
         // Total payment
+        // Total payment sesuai PP 35/2021
         if ($isWeekend) {
-            // Weekend → 2x tarif dasar
-            $totalPayment = $totalHours * 2 * $hourlyWage;
+            // Hari libur/weekend:
+            // Jam 1-8  → 2× upah/jam
+            // Jam ke-9 → 3× upah/jam
+            // Jam 10+  → 4× upah/jam
+            if ($totalHours <= 8) {
+                $totalPayment = $totalHours * 2 * $hourlyWage;
+            } elseif ($totalHours <= 9) {
+                $totalPayment = (8 * 2 * $hourlyWage)
+                    + (($totalHours - 8) * 3 * $hourlyWage);
+            } else {
+                $totalPayment = (8 * 2 * $hourlyWage)
+                    + (1 * 3 * $hourlyWage)
+                    + (($totalHours - 9) * 4 * $hourlyWage);
+            }
         } else {
-            // Weekday → aturan PP 35/2021
+            // Hari kerja (weekday):
+            // Jam ke-1  → 1.5× upah/jam
+            // Jam ke-2+ → 2× upah/jam
             if ($totalHours <= 1) {
                 $totalPayment = $totalHours * 1.5 * $hourlyWage;
             } else {
-                $totalPayment = (1 * 1.5 * $hourlyWage) + (($totalHours - 1) * 2 * $hourlyWage);
+                $totalPayment = (1 * 1.5 * $hourlyWage)
+                    + (($totalHours - 1) * 2 * $hourlyWage);
             }
         }
 
         // Update record overtime
         $overtime->update([
-            'end_time' => $end,
+            'end_time' => $end->format('H:i:s'),
+            'actual_hours' => $actualHours,
             'total_work_hours' => $totalHours,
             'overtime_hourly_wage' => $hourlyWage,
             'total_payment' => round($totalPayment, 2),
@@ -258,17 +301,17 @@ class OvertimeController extends Controller
 
 
 
-    // private function floorToHalfHour(float $hours): float
-    // {
-    //     return floor($hours * 2) / 2;
-    // }
+    private function floorToHalfHour(float $hours): float
+    {
+        return floor($hours * 2) / 2;
+    }
 
 
 
 
     public function logout(Request $request)
     {
-        $request->session()->forget('verified_worker'); 
+        $request->session()->forget('verified_worker');
 
         // Optionally, you can invalidate the session
         $request->session()->invalidate();

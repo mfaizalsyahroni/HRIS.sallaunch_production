@@ -22,8 +22,8 @@
 
         {{-- Card List CCTV --}}
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">List of CCTV</h5>
+            <div class="card-header bg-secondary">
+                <h5 class="text-light fw-bold mb-0" style="text-shadow: 0 0 5px #fff">List of CCTV</h5>
             </div>
             <div class="card-body p-0">
                 {{-- Flash Message --}}

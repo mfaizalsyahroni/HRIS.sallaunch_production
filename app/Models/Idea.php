@@ -31,6 +31,7 @@ class Idea extends Model
         return $this->belongsTo(Worker::class, 'user_id');
     }
 
+
     // public function worker()
     // {
     //     return $this->belongsTo(Worker::class, 'user_id', 'id');

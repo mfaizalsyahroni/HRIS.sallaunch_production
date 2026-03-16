@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <div class="container d-flex justify-content-center align-items-start pt-2 min-vh-100">
-        <div class="card shadow-lg border-0 rounded-4" style="max-width: 1000px; width: 100%;">
+        <div class="card shadow-lg border-0 rounded-4" style="max-width: 1400px; width: 100%;">
             <div class="card-body p-4">
 
                 <h4 class="text-center fw-bold mb-3">
@@ -51,13 +51,21 @@
                                     <td>{{ \Carbon\Carbon::parse($row->working_period_start)->format('d M Y') }}</td>
                                     <td>{{ $row->employment_type }}</td>
 
+
+
                                     <td class="text-center">
 
                                         {{-- UPDATE --}}
-                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                            data-bs-target="#viewWorker{{ $row->employee_id }}">
+                                            <i class="bi bi-person"></i>
+                                            <small>View</small>
+                                        </button>
+
+                                        <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
                                             data-bs-target="#editWorker{{ $row->employee_id }}">
                                             <i class="fa fa-pen"></i>
-                                            <span>Update</span>
+                                            <small>Update</small>
                                         </button>
 
                                         {{-- DELETE --}}
@@ -69,13 +77,82 @@
 
                                             <button class="btn btn-sm btn-danger">
                                                 <i class="fa fa-trash"></i>
-                                                <span>Delete</span>
+                                                <small>Delete</small>
                                             </button>
 
                                         </form>
 
                                     </td>
                                 </tr>
+
+                                {{-- MODAL VIEW --}}
+                                <div class="modal fade" id="viewWorker{{ $row->employee_id }}" tabindex="-1"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-md modal-dialog-centered">
+                                        <div class="modal-content rounded-4 shadow">
+
+                                            <div class="modal-header bg-primary text-white rounded-top-4">
+                                                <h5 class="modal-title">
+                                                    <i class="bi bi-person-circle me-2"></i> Employee Profile
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-danger"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <div class="modal-body p-0">
+                                                <ul class="list-group list-group-flush">
+
+                                                    <li class="list-group-item">
+                                                        <strong>Employee ID</strong><br>
+                                                        {{ $row->employee_id }}
+                                                    </li>
+
+                                                    <li class="list-group-item">
+                                                        <strong>Full Name</strong><br>
+                                                        {{ $row->fullname }}
+                                                    </li>
+
+                                                    <li class="list-group-item">
+                                                        <strong>Position</strong><br>
+                                                        {{-- role = position di model Worker --}}
+                                                        {{ $row->role ?? '-' }}
+                                                    </li>
+
+                                                    <li class="list-group-item">
+                                                        <strong>Employment Type</strong><br>
+                                                        {{ ucfirst($row->employment_type) }}
+                                                    </li>
+
+                                                    <li class="list-group-item">
+                                                        <strong>Working Period Start</strong><br>
+                                                        {{ $row->working_period_start ? \Carbon\Carbon::parse($row->working_period_start)->format('d M Y') : '-' }}
+                                                    </li>
+
+                                                    <li class="list-group-item">
+                                                        <strong>Basic Salary</strong><br>
+                                                        {{-- null-safe: kalau salaryGrade belum ada tidak error --}}
+                                                        {{ $row->salaryGrade?->formatted_salary ?? '-' }}
+                                                    </li>
+
+                                                    <li class="list-group-item">
+                                                        <strong>Status</strong><br>
+                                                        <span
+                                                            class="badge bg-{{ $row->isActive() ? 'success' : 'secondary' }}">
+                                                            {{ $row->isActive() ? 'Active' : 'Inactive' }}
+                                                        </span>
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
 
                                 {{-- MODAL EDIT --}}
                                 <div class="modal fade" id="editWorker{{ $row->employee_id }}">

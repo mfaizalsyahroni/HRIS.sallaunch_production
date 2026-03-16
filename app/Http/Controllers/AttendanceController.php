@@ -70,30 +70,24 @@ class AttendanceController extends Controller
 
 
         if (!$attendance) {
-            return redirect()->back()->with('message', '"You must clock in first. You have not clocked in today."');
+            return redirect()->back()->with('message', 'You have not clocked in today or already clocked out.');
         }
 
-        if ($attendance->clock_out_time) {
-            return redirect()->back()->with('message', '"Already clocked out today"');
+        $clockIn = Carbon::parse($attendance->clock_in_time);
+        $now = now();
+        $expectedClockOut = $clockIn->copy()->addHours(9);
+
+        // Belum 9 jam → block, tampilkan alert
+        if ($now->lessThan($expectedClockOut)) {
+            return back()->with('message', 'You can clock out only after 8 working hours.');
         }
 
-        $clockOut = now();
-
-        $totalMinutes = Carbon::parse($attendance->clock_in_time)
-            ->diffInMinutes($clockOut);
-
-        $totalHoursRaw = round($totalMinutes / 60, 2);
-
-        if ($totalHoursRaw < 9) {
-            return back()->with(
-                'message',
-                'You can clock out only after 8 working hours.'
-            );
-        }
+        // Sudah lewat 9 jam → set clock_out ke clock_in + 9 jam (bukan now())
+        $clockOut = $expectedClockOut;
 
         $breakHours = 1;
 
-        $effectiveHours = max(0, $totalHoursRaw - $breakHours);
+        $effectiveHours = 9 - $breakHours;
 
         $totalWorkHours = min($effectiveHours, 8);
 

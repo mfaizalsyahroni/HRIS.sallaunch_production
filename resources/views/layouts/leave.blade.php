@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'My Application')</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: transparent;
+            overflow-x: hidden;
+        }
+
+        .leave-wrapper {
+            width: 100%;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="leave-wrapper">
+        @yield('content')
+    </div>
+</body>
+
+</html>

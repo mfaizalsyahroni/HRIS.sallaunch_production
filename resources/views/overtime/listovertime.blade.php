@@ -92,7 +92,9 @@
                 @if (!$currentOvertime)
                     <form action="{{ route('overtime.start') }}" method="POST">
                         @csrf
-                        <button type="submit">Start Overtime</button>
+                        <button type="submit">
+                            Start Overtime
+                        </button>
                     </form>
                 @else
                     <form action="{{ route('overtime.finish') }}" method="POST">

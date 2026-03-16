@@ -6,18 +6,39 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
             integrity="sha512-S...HASH..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+        {{-- Background Layer --}}
+        <div
+            style="
+                        position: fixed;
+                        top: 0; left: 0;
+                        width: 100vw; height: 100vh;
+                        background-color: #f0f2f5;
+                        z-index: -1;
+                        ">
+        </div>
 
-        <div class="container py-5 bg-light rounded-3">
-            <h2 class="fw-bold mb-4">📊 Admin Dashboard</h2>
+        <div class="my-4">
+            <h2 class="fw-bold mb-4">
+                <i class="bi bi-display me-2"></i>Admin Dashboard
+            </h2>
 
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
             <div class="mb-4">
-                <p>Total Staff: {{ $totalStaff }}</p>
-                <p>Total Modules: {{ $totalModules }}</p>
-                <p>Total Feedback: {{ $totalFeedback }}</p>
+                <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-people-fill text-primary fs-4 me-2"></i>
+                    <span class="fw-bold me-2">Total Staff:</span> {{ $totalStaff }}
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-box-seam-fill text-success fs-4 me-2"></i>
+                    <span class="fw-bold me-2">Total Modules:</span> {{ $totalModules }}
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-chat-dots-fill text-warning fs-4 me-2"></i>
+                    <span class="fw-bold me-2">Total Feedback:</span> {{ $totalFeedback }}
+                </div>
             </div>
 
             <!-- Form Tambah/Edit Modul -->

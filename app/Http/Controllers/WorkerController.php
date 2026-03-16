@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Worker;
+use App\Models\SalaryGrade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
@@ -24,7 +25,7 @@ class WorkerController extends Controller
             'password' => 'required',
         ]);
 
-        // ✅ WHITELIST (boleh ke create)
+        // ✅ WHITELIST (can be create)
         if (
             ($request->employee_id == '100' && $request->password === 'pw7') ||
             ($request->employee_id == '110' && $request->password === 'pw7')
@@ -33,31 +34,32 @@ class WorkerController extends Controller
             return redirect()->route('new_employee.create');
         }
 
-        // 🔎 cek worker di database
+        // 🔎 check worker from database
         $worker = Worker::where('employee_id', $request->employee_id)->first();
 
-        // ❌ tidak ditemukan
+        // ❌ not found
         if (!$worker) {
             return back()->withErrors([
                 'employee_id' => 'Employee ID not found.'
             ]);
         }
 
-        // ❌ password salah
+        // ❌ password is wrong
         if (!Hash::check($request->password, $worker->password)) {
             return back()->withErrors([
                 'password' => 'Password is incorrect.'
             ]);
         }
 
-        // ❌ SUDAH TERDAFTAR → STOP
+        // ❌ DONE APPLY → STOP
         return back()->with('error', 'Employee already registered. You cannot continue.');
     }
 
     public function create()
     {
-        return view('new_employee.create'); // Mengembalikan view create.blade.php
+        return view('new_employee.create');
     }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -73,7 +75,7 @@ class WorkerController extends Controller
         $worker = Worker::create($validated);
 
         return redirect()
-            ->route('new_employee.profile', $worker->employee_id)
+            ->route('new_employee.salary', $worker->employee_id)
             ->with('success', 'Worker created successfully.');
     }
 
@@ -90,25 +92,6 @@ class WorkerController extends Controller
     }
 
 
-    // public function update(Request $request, Worker $worker)
-    // {
-    //     $validated = $request->validate([
-    //         'fullname' => 'required|string|max:255',
-    //         'role' => 'required|string|max:255',
-    //         'employment_type' => 'required|in:permanent,contract,intern,probation,freelance',
-    //         'working_period_start' => 'required|date',
-    //         'password' => 'nullable|min:2|confirmed',
-    //     ]);
-
-    //     if (empty($validated['password'])) {
-    //         unset($validated['password']);
-    //     }
-
-    //     $worker->update($validated);
-
-    //     return back()->with('success', 'Employee updated successfully');
-    // }
-
 
     public function update(Request $request, $id)
     {
@@ -120,7 +103,7 @@ class WorkerController extends Controller
             'employment_type' => $request->employment_type,
         ];
 
-        // hanya update jika diisi
+        // just update if filled
         if ($request->filled('working_period_start')) {
             $data['working_period_start'] = $request->working_period_start;
         }
@@ -142,6 +125,37 @@ class WorkerController extends Controller
 
         return back()->with('success', 'Employee deleted successfully ✅.');
     }
+
+
+    public function salary(Worker $worker)
+    {
+        return view('new_employee.salary', compact('worker'));
+    }
+
+    public function storeSalary(Request $request, Worker $worker)
+    {
+        $request->validate([
+            'position' => 'required|string|max:255',
+            'grade_name' => 'required|in:Junior,Middle,Senior',
+            'basic_salary' => 'required|numeric|min:0',
+            'employment_type' => 'required|in:permanent,contract,intern,probation,freelance',
+        ]);
+
+        SalaryGrade::create([
+            'position' => $request->position,
+            'grade_name' => $request->grade_name,
+            'basic_salary' => $request->basic_salary,
+            'employment_type' => $request->employment_type,
+            'is_active' => $request->has('is_active'),
+        ]);
+
+        // Update role worker sesuai position yang baru dibuat
+        $worker->update(['role' => $request->position]);
+
+        return redirect()->route('new_employee.profile', $worker->employee_id)
+            ->with('success', 'Salary grade created and assigned.');
+    }
+
 
     public function logout(Request $request)
     {
