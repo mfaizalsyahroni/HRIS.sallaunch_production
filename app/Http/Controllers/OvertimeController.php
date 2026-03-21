@@ -108,6 +108,11 @@ class OvertimeController extends Controller
         if ($request->filled('worker_id')) {
             $query->where('worker_id', $request->worker_id);
         }
+
+        if ($request->filled('date')) {
+            $query->whereDate('overtime_date', $request->date);
+        }
+        
         return view('overtime.admin.dashboard', [
             'overtimes' => $query->get(),
             'workers' => Worker::orderBy('fullname')->get(),

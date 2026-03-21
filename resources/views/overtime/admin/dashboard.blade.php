@@ -14,15 +14,19 @@
 
 
 
-
         @if ($isAdmin)
-            <div class="d-flex justify-content-center mb-4">
+            <div class="d-flex flex-column align-items-center gap-3 mb-4">
+
+                
                 <form method="GET" action="{{ route('overtime.admin.dashboard') }}"
-                    class="d-flex align-items-center gap-2">
+                    class="d-flex align-items-center gap-3">
 
-                    <label class="fw-semibold mb-0">Select Worker:</label>
+                    <label class="fw-semibold mb-0" style="width: 130px;">
+                        Select Worker
+                    </label>
 
-                    <select name="worker_id" class="form-select" style="width: 260px" onchange="this.form.submit()">
+                    <select name="worker_id" class="form-select" style="width: 260px;" onchange="this.form.submit()">
+
                         <option value="">-- All Worker --</option>
 
                         @foreach ($workers as $worker)
@@ -33,6 +37,20 @@
                     </select>
 
                 </form>
+
+            
+                <form method="GET" action="{{ route('overtime.admin.dashboard') }}"
+                    class="d-flex align-items-center gap-3">
+
+                    <label class="fw-semibold mb-0" style="width: 130px;">
+                        Select Date
+                    </label>
+
+                    <input type="date" name="date" class="form-control" style="width: 260px;"
+                        value="{{ request('date') }}" onchange="this.form.submit()">
+
+                </form>
+
             </div>
         @endif
 
@@ -82,7 +100,7 @@
                         <td colspan="5">Data kosong</td>
                     </tr>
                 @endforelse
-            </tbody>    
+            </tbody>
         </table>
 
         <div class="d-flex justify-content-center mt-4">

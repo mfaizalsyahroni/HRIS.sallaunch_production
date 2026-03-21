@@ -3,6 +3,7 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
 
+
     <div class="absen">
         <div class="container attendance-container">
             <center>
@@ -13,11 +14,19 @@
                         <h3>Welcome {{ Auth::user()->fullname }}</h3>
                     </div>
 
-                    {{-- @if (session('message1'))
-                        <div>
-                            <h3>{{ session('message1') }}</h3>
+                    @if (session('error'))
+                        <div id="flashMessage1" class="alert alert-danger"
+                            style="display: inline-block; background-color: #f8d7da; color: #842029; padding: 4px 8px; border-radius: 6px;">
+                            <h3 style="margin: 0;">{{ session('error') }}</h3>
                         </div>
-                    @endif --}} 
+
+                        <script>
+                            setTimeout(() => {
+                                document.getElementById("flashMessage1").style.display = "none";
+                            }, 10000);
+                        </script>
+                    @endif
+
                     @if (session('message'))
                         <div id="flashMessage">
                             <h3>{{ session('message') }}</h3>
@@ -28,68 +37,68 @@
                                 document.getElementById("flashMessage").style.display = "none";
                             }, 8000);
                         </script>
-                @endif
+                    @endif
 
 
 
 
 
-                <h1>
-                    <table class="visual">
-                        <tr style="background-color: #4c8eaf; color: rgb(255, 255, 255);">
-                            <th>Date</th>
-                            <th>Clock In</th>
-                            <th>Clock Out</th>
-                            <th>Perfomance</th>
-                        </tr>
-                        @if (!empty($attendances) && $attendances->count())
-                            @foreach ($attendances as $attendance)
-                                <tr>
-                                    <td>{{ $attendance->work_date }}</td>
-                                    <td>{{ $attendance->clock_in_time ?? '' }}</td>
-                                    <td>{{ $attendance->clock_out_time ?? '' }}</td>
-                                    <td>
-                                        @if ($attendance->clock_in_time && $attendance->clock_out_time)
-                                            ✅ <!-- Checkmark for completed attendance -->
-                                        @else
-                                            ✔️ <!-- Cross mark for incomplete attendance -->
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="3">No attendance records found for today</td>
+                    <h1>
+                        <table class="visual">
+                            <tr style="background-color: #4c8eaf; color: rgb(255, 255, 255);">
+                                <th>Date</th>
+                                <th>Clock In</th>
+                                <th>Clock Out</th>
+                                <th>Perfomance</th>
                             </tr>
-                        @endif
-                    </table>
+                            @if (!empty($attendances) && $attendances->count())
+                                @foreach ($attendances as $attendance)
+                                    <tr>
+                                        <td>{{ $attendance->work_date }}</td>
+                                        <td>{{ $attendance->clock_in_time ?? '' }}</td>
+                                        <td>{{ $attendance->clock_out_time ?? '' }}</td>
+                                        <td>
+                                            @if ($attendance->clock_in_time && $attendance->clock_out_time)
+                                                ✅ <!-- Checkmark for completed attendance -->
+                                            @else
+                                                ✔️ <!-- Cross mark for incomplete attendance -->
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="3">No attendance records found for today</td>
+                                </tr>
+                            @endif
+                        </table>
 
 
-                    <div style="display: flex; justify-content: center; gap: 10px;">
-                        <form action="{{ route('attendance.clockin') }}" method="POST">
+                        <div style="display: flex; justify-content: center; gap: 10px;">
+                            <form action="{{ route('attendance.clockin') }}" method="POST">
+                                @csrf
+                                <button type="submit">
+                                    <h1>Clock In</h1>
+                                </button>
+                            </form>
+
+
+                            <form action="{{ route('attendance.clockout') }}" method="POST">
+                                @csrf
+                                <button type="submit">
+                                    <h1>Clock Out</h1>
+                                </button>
+                            </form>
+                        </div>
+
+
+                        <form action="{{ route('attendance.logout') }}" method="POST">
                             @csrf
                             <button type="submit">
-                                <h1>Clock In</h1>
+                                <h1>Logout</h1>
                             </button>
                         </form>
-
-
-                        <form action="{{ route('attendance.clockout') }}" method="POST">
-                            @csrf
-                            <button type="submit">
-                                <h1>Clock Out</h1>
-                            </button>
-                        </form>
-                    </div>
-
-
-                    <form action="{{ route('attendance.logout') }}" method="POST">
-                        @csrf
-                        <button type="submit">
-                            <h1>Logout</h1>
-                        </button>
-                    </form>
-                </h1>
+                    </h1>
             </center>
         </div>
 

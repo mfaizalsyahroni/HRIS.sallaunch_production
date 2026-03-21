@@ -79,7 +79,7 @@ class AttendanceController extends Controller
 
         // Belum 9 jam → block, tampilkan alert
         if ($now->lessThan($expectedClockOut)) {
-            return back()->with('message', 'You can clock out only after 8 working hours.');
+            return back()->with('error', 'You can clock out only after 8 working hours 🕘.');
         }
 
         // Sudah lewat 9 jam → set clock_out ke clock_in + 9 jam (bukan now())
