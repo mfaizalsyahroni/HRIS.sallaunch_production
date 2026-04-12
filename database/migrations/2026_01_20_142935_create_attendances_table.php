@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->date('work_date');
             $table->time('clock_in_time')->nullable();
             $table->time('clock_out_time')->nullable();
-            $table->decimal('total_work_hours', 5, 2)->default(0);
+            // $table->decimal('total_work_hours', 5, 2)->default(0); optional for save total work hours
 
             $table->timestamps();
 

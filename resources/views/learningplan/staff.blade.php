@@ -4,10 +4,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         integrity="sha512-S...HASH..." crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <div class="container py-5">
+    
+    <div class="container">
 
         <!-- Header -->
-        <div class="text-center mb-5">
+        <div class="text-center py-4" style="background-color: #f0f4f8; border-radius: 12px;">
             <h2 class="fw-bold">📘 Staff Learning Plan Modules</h2>
             <p class="text-muted">Complete modules and upload feedback video (Min 3 menit)</p>
         </div>
@@ -41,7 +42,7 @@
         </div>
 
         <!-- Modules -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"  style="background-color: #f0f4f8; border-radius: 12px;">
             @foreach ($modules as $module)
                 <div class="col">
                     <div class="card shadow-sm border-0 rounded-4 overflow-hidden h-100 d-flex flex-column">
@@ -76,7 +77,7 @@
                 </div>
             @endforeach
         </div>
-        <div class="d-flex justify-content-center mt-4">
+        <div class="d-flex justify-content-center py-4">
             <form action="{{ route('overtime.logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="btn btn-outline-danger px-4">

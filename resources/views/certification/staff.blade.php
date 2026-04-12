@@ -5,23 +5,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <div class="container">
-        <h3 class="mb-4">🎓 Sertifikasi Saya</h3>
+    <div class="container py-4">
+        <h3 class="mb-4">🎓 My Certifications</h3>
 
         @if ($certifications->isEmpty())
             <div class="alert alert-info">
-                Belum ada sertifikasi yang dinilai.
+                No certifications have been graded yet.
             </div>
         @else
             <table class="table table-bordered align-middle">
                 <thead class="table-dark">
                     <tr>
                         <th>Module</th>
-                        <th>Nilai</th>
+                        <th>Grade</th>
                         <th>Status</th>
-                        <th>Catatan</th>
+                        <th>Notes</th>
                         <th>Reviewer</th>
-                        <th>Tanggal</th>
+                        <th>Date</th>
                         <th class="text-center">Action</th>
                     </tr>
                 </thead>

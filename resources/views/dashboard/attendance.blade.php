@@ -17,7 +17,9 @@
                     @if (session('error'))
                         <div id="flashMessage1" class="alert alert-danger"
                             style="display: inline-block; background-color: #f8d7da; color: #842029; padding: 4px 8px; border-radius: 6px;">
-                            <h3 style="margin: 0;">{{ session('error') }}</h3>
+                            <h3 style="margin: 0;">
+                                {{ session('error') }}
+                            </h3>
                         </div>
 
                         <script>
@@ -27,9 +29,12 @@
                         </script>
                     @endif
 
-                    @if (session('message'))
-                        <div id="flashMessage">
-                            <h3>{{ session('message') }}</h3>
+                    @if (session('warning'))
+                        <div id="flashMessage" class="alert alert-warning"
+                            style="display: inline-block; background-color: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 6px;">
+                            <h3 style="margin: 0;">
+                                {{ session('warning') }}
+                            </h3>
                         </div>
 
                         <script>

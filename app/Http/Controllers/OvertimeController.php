@@ -112,7 +112,7 @@ class OvertimeController extends Controller
         if ($request->filled('date')) {
             $query->whereDate('overtime_date', $request->date);
         }
-        
+
         return view('overtime.admin.dashboard', [
             'overtimes' => $query->get(),
             'workers' => Worker::orderBy('fullname')->get(),
@@ -185,11 +185,24 @@ class OvertimeController extends Controller
                 ->whereNotNull('clock_out_time')
                 ->first();
 
-            if (!$attendance || $attendance->total_work_hours < 8) {
+            // this problem    
+            // if (!$attendance || $attendance->total_work_hours < 8) 
+            if (!$attendance) {
                 return back()->withErrors([
                     'message' => 'Overtime weekday hanya bisa dimulai setelah kerja minimal 8 jam'
                 ]);
             }
+
+            $clockIn = Carbon::parse($attendance->clock_in_time);
+            $clockOut = Carbon::parse($attendance->clock_out_time);
+            $hoursWorked = $clockIn->diffInHours($clockOut);
+
+            if ($hoursWorked < 8) {
+                return back()->withErrors([
+                    'message' => 'Overtime weekday hanya bisa dimulai setelah kerja minimal 8 jam'
+                ]);
+            }
+
         }
 
         // Weekend or weekday valid → can start
@@ -258,7 +271,17 @@ class OvertimeController extends Controller
                 ->where('work_date', $overtime->overtime_date)
                 ->whereNotNull('clock_out_time')
                 ->first();
-            if (!$attendance || $attendance->total_work_hours < 8) {
+
+            // turn_off total_work_hours    
+            // if (!$attendance || $attendance->total_work_hours < 8) 
+            if (!$attendance) {
+                return back()->withErrors(['Overtime weekday hanya bisa setelah kerja minimal 8 jam']);
+            }
+
+            $clockIn = Carbon::parse($attendance->clock_in_time);
+            $clockOut = Carbon::parse($attendance->clock_out_time);
+            
+            if ($clockIn->diffInHours($clockOut) < 8) {
                 return back()->withErrors(['Overtime weekday hanya bisa setelah kerja minimal 8 jam']);
             }
         }

@@ -46,12 +46,17 @@ class AuthController extends Controller
     }
 
     // Handle logout
-    public function logout()
+    public function logout(Request $request)
     {
-        // Log the user out
-        Auth::logout();
+        Auth::logout(); // Log out the authenticated user
 
-        // Redirect to login page
-        return redirect()->route('login');
+        // Optionally, you can invalidate the session
+        $request->session()->invalidate();
+
+        // Optionally, regenerate the session token
+        $request->session()->regenerateToken();
+
+        // Redirect the user to a specific page after logout
+        return redirect()->route('home')->with('message', 'You have been logged out successfully.');
     }
 }

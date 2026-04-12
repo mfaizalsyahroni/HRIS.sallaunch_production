@@ -85,8 +85,9 @@ class LeaveController extends Controller
                 ->withErrors(['error' => 'Please verify first.']);
 
         }
+        $worker = Worker::where('employee_id', $workerData['employee_id'])->first();
 
-        return view('leave.next', compact('workerData'));
+        return view('leave.next', compact('workerData', 'worker'));
     }
 
 
@@ -114,6 +115,17 @@ class LeaveController extends Controller
         $start = Carbon::createFromFormat('d-m-Y', $request->start_date)->format('Y-m-d');
         $end = Carbon::createFromFormat('d-m-Y', $request->end_date)->format('Y-m-d');
 
+        // Hitung total hari
+        $totalDays = Carbon::parse($start)->diffInDays(Carbon::parse($end)) + 1;
+
+        // Cek sisa cuti
+        $worker = Worker::where('employee_id', $workerData['employee_id'])->first();
+
+        if ($worker->leave_balance < $totalDays) {
+            return redirect()->back()
+                ->with('error', "Sisa cuti kamu hanya {$worker->leave_balance} hari, tidak cukup untuk {$totalDays} hari.");
+        }
+
         $leave = Leave::create([
             'fullname' => $workerData['fullname'],
             'employee_id' => $workerData['employee_id'],
@@ -121,6 +133,7 @@ class LeaveController extends Controller
             'leave_type' => $request->leave_type,
             'start_date' => $start,
             'end_date' => $end,
+            'total_days' => $totalDays,
             'leave_reason' => $request->leave_reason,
             'status' => 'pending',
         ]);
@@ -162,7 +175,7 @@ class LeaveController extends Controller
 
 
     /* 
-    6. HALAMAN ADMIN KHUSUS APPROVAL CUTI
+    6. Leave Approval
      */
     public function adminIndex()
     {

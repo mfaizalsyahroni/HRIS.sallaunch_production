@@ -36,9 +36,7 @@ class LearningplanController extends Controller
             return back()->withErrors(['Your employee ID or Password is wrong']);
         }
 
-        
-
-        session(['verified_worker' => $worker->id]);
+        session(['verified_worker' =>  $worker->employee_id]);
         return redirect()->route('learningplan.staff');
     }
 
@@ -51,7 +49,9 @@ class LearningplanController extends Controller
                 ->withErrors(['Please verify first']);
         }
 
-        $worker = Worker::findOrFail($workerSession);
+        // $worker = Worker::findOrFail($workerSession);
+        
+        $worker = Worker::where('employee_id', $workerSession)->firstOrFail();
 
         $modules = LearningModule::orderBy('id', 'ASC')->get();
 

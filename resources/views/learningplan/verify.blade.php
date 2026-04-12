@@ -17,7 +17,7 @@
 
                 <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" name="password" id="employee_id" required class="input-login" autocomplete="off">
+                <input type="password" name="password" id="password" required class="input-login" autocomplete="off">
                 </div>
 
                 <button type="submit" class="button-login">Submit</button>

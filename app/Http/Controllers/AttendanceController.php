@@ -39,7 +39,7 @@ class AttendanceController extends Controller
 
         if ($openAttendance) {
             return back()->with(
-                'message',
+                'warning',
                 'You must clock out before clocking in again.'
             );
         }
@@ -59,6 +59,7 @@ class AttendanceController extends Controller
         );
     }
 
+    // with total_work_hours
     public function clockOut()
     {
         $user = Auth::user();
@@ -99,6 +100,41 @@ class AttendanceController extends Controller
 
         return back()->with('message', '"Clock out successful"');
     }
+
+    // pending procces
+    // public function clockOut()
+    // {
+    //     $user = Auth::user();
+
+    //     $attendance = Attendance::where('employee_id', $user->employee_id)
+    //         ->whereDate('work_date', today())
+    //         ->whereNull('clock_out_time')
+    //         ->first();
+
+    //     if (!$attendance) {
+    //         return redirect()->back()->with('message', 'You have not clocked in today or already clocked out.');
+    //     }
+
+    //     $clockIn = Carbon::parse($attendance->clock_in_time);
+    //     $now = now();
+    //     $expectedClockOut = $clockIn->copy()->addHours(9);
+
+    //     // Belum 9 jam → block, tampilkan alert
+    //     if ($now->lessThan($expectedClockOut)) {
+    //         return back()->with('error', 'You can clock out only after 8 working hours 🕘.');
+    //     }
+
+    //     // Sudah lewat 9 jam → set clock_out ke clock_in + 9 jam (bukan now())
+    //     $clockOut = $expectedClockOut;
+
+    //     // Update clock out time (hapus total_work_hours karena kolom tidak ada)
+    //     $attendance->update([
+    //         'clock_out_time' => $clockOut,
+    //         // 'total_work_hours' => $totalWorkHours, // ← dicomment, kolom tidak ada
+    //     ]);
+
+    //     return back()->with('message', '"Clock out successful"');
+    // }
 
     public function weeklyReport($employeeId)
     {

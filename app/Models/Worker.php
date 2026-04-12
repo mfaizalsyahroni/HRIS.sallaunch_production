@@ -15,9 +15,11 @@ class Worker extends Authenticatable
         'employee_id',
         'fullname',
         'password',
+        
 
         'role',              // legacy / manual HRD
 
+        'leave_balance',
         'working_period_start',
         'working_period_end',
         'employment_type',
@@ -56,6 +58,11 @@ class Worker extends Authenticatable
     public function attendances()
     {
         return $this->hasMany(Attendance::class, 'employee_id', 'employee_id');
+    }
+
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class, 'employee_id', 'employee_id');
     }
 
     public function personalInfo()

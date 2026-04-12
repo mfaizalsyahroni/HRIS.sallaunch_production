@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.ot')
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/feature_leave.css') }}">
@@ -6,9 +6,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         integrity="sha512-S...HASH..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 
-    <div class="d-flex flex-column justify-content-between align-items-center min-vh-100 min-vw-100 pt-5"
-        style="background: url('{{ asset('img/part/cuti.jpg') }}') no-repeat center center; background-size: cover; padding: 2rem 0;">
+    <div class="d-flex flex-column justify-content-center align-items-center min-vh-100 min-vw-100 pt-5"
+        style="
+        background-image: url('{{ asset('img/part/cuti.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        margin: 0;          
+        padding: 0;         
+        width: 100vw;       
+        min-height: 100vh;  
+    ">
 
         <div class="wrapper p-4 bg-white bg-opacity-75 rounded shadow" style="min-width: 300px;">
 
@@ -49,14 +59,13 @@
                 <button type="submit" class="button-login">Submit</button>
             </form>
         </div>
-            <div class="d-flex justify-content-center align-items-center mt-3">
-                <form action="{{ route('leave.logout') }}" method="POST">
+        <div class="d-flex justify-content-center align-items-center py-4">
+            <form action="{{ route('leave.logout') }}" method="POST">
                 @csrf
-                    <button type="submit" class="btn btn-outline-danger px-4 fw-bold">
+                <button type="submit" class="btn btn-outline-danger px-4 fw-bold">
                     <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
-                    </button>
-                </form>
-            </div>
+                </button>
+            </form>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 @endsection

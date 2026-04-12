@@ -19,6 +19,7 @@ class Leave extends Model
         'leave_type',
         'start_date',
         'end_date',
+        'total_days', //point
         'leave_reason',
         'status',
     ];
@@ -40,6 +41,16 @@ class Leave extends Model
         return Carbon::parse($value)->format('d-m-Y');  // Contoh: 05-10-2023
     }
 
+    // Raw date untuk kalkulasi (tanpa accessor)
+    public function getRawStartDate()
+    {
+        return $this->getRawOriginal('start_date');
+    }
+
+    public function getRawEndDate()
+    {
+        return $this->getRawOriginal('end_date');
+    }
 
     public function setPasswordAttribute($value)
     {

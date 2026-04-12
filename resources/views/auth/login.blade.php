@@ -12,11 +12,16 @@
         style="background: url('{{ asset('img/home/login.jpg') }}') no-repeat center center; background-size: cover; padding: 2rem 0;">
 
         <!-- Wrapper login di tengah -->
-        <div class="wrapper p-4 bg-white bg-opacity-75 rounded shadow" style="min-width: 300px; margin-top: 50px;">
+        <div class="wrapper p-4 bg-white bg-opacity-75 rounded shadow"
+            style="min-width: 300px; margin-top: 50px;  position: relative;">
             <h1 class="title mb-4">Form Attendance</h1>
 
+
             @if (session('message'))
-                <div id="alert-message" class="notif-login">{{ session('message') }}</div>
+                <div id="alert-message" class="notif-login"
+                    style="position: absolute; top: 60px; left: 0; right: 0; margin: 0 auto; width: 60%; text-align: center; z-index: 99; font-size: 12px; padding: 5px 10px;">
+                    {{ session('message') }}
+                </div>
                 <script>
                     setTimeout(() => {
                         const alert = document.getElementById('alert-message');
@@ -25,7 +30,7 @@
                             alert.style.opacity = '0';
                             setTimeout(() => alert.remove(), 500);
                         }
-                    }, 6000); // 6 detik
+                    }, 6000);
                 </script>
             @endif
 
@@ -47,7 +52,7 @@
 
         <!-- Logout selalu di bawah -->
         <div class="d-flex justify-content-center align-items-center mb-3">
-            <form action="{{ route('news.logout') }}" method="POST">
+            <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="btn btn-outline-danger px-4 fw-bold">
                     <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
@@ -55,6 +60,5 @@
             </form>
         </div>
     </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 @endsection
