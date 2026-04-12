@@ -24,11 +24,12 @@
             @if ($worker)
                 <p>
                     <strong>Remaining Leave:</strong>
-                    <span class="badge fs-6 {{ $worker->leave_balance <= 3 ? 'bg-danger' : 'bg-succes' }}">
+                    <span class="badge fs-6 {{ $worker->leave_balance <= 3 ? 'bg-danger' : 'bg-success' }}">
                         {{ $worker->leave_balance }}
                         / 12 Day
                     </span>
                 </p>
+            @endif    
 
 
                 <div class="back">

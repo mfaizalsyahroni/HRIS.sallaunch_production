@@ -149,7 +149,11 @@ class LeaveController extends Controller
     public function show($id)
     {
         $leave = Leave::findOrFail($id);
-        return view('leave.show', compact('leave'));
+
+        // I'm making sure the $worker variable exists so the Blade template doesn't throw a tantrum.
+        $worker = Worker::where('employee_id', $leave->employee_id)->first();
+
+        return view('leave.show', compact('leave', 'worker'));
     }
 
 
@@ -196,11 +200,18 @@ class LeaveController extends Controller
             $viewFile = 'leave.verify';  // halaman admin umum
         }
 
-        // Ambil data cuti
-        $leaves = Leave::orderBy('created_at', 'desc')->get();
+        // Add Month & year filter (default = current)
+        $month = request()->query('month', Carbon::now()->format('m'));
+        $year = request()->query('year', Carbon::now()->format('Y'));
+
+        // Retrieve leaves data
+        $leaves = Leave::whereMonth('created_at', $month)
+                        ->whereYear('created_at', $year)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
 
         // Tampilkan view yang sesuai
-        return view($viewFile, compact('leaves'));
+        return view($viewFile, compact('leaves', 'month', 'year'));
     }
 
 

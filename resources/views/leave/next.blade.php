@@ -6,7 +6,7 @@
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 
-    <link rel="stylesheet" href="{{ asset('css/feature_leaves.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/feature_leavess.css') }}">
 
     <div class="container">
         <div class="wrapper">

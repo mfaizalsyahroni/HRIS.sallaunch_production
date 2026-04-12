@@ -94,7 +94,7 @@
                     </thead>
                     <tbody>
                         @foreach ($leaves as $leave)
-                            <tr">
+                            <tr>
                                 <td>{{ $leave->employee_id }}</td>
                                 <td>{{ $leave->fullname }}</td>
                                 <td>{{ $leave->leave_type }}</td>
@@ -112,16 +112,18 @@
                                 </td>
                                 <td>
                                     @if ($leave->status === 'pending')
-                                        <form action="{{ route('leave.approve', $leave->id) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                                        </form>
-                                        <form action="{{ route('leave.reject', $leave->id) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                                        </form>
+                                        <div class="d-grid gap-2">
+                                            <form action="{{ route('leave.approve', $leave->id) }}" method="POST"
+                                                class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                            </form>
+                                            <form action="{{ route('leave.reject', $leave->id) }}" method="POST"
+                                                class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                            </form>
+                                        </div>
                                     @else
                                         -
                                     @endif
@@ -130,11 +132,11 @@
                                     <a href="{{ route('leave.show', $leave->id) }}"
                                         class="btn btn-primary btn-sm">Detail</a>
                                 </td>
-                                <td>{{ $leave->total_days }} hari</td>
+                                <td>{{ $leave->total_days }} days</td>
                                 <td>
                                     <span
                                         class="badge {{ ($leave->worker->leave_balance ?? 12) <= 3 ? 'bg-danger' : 'bg-success' }}">
-                                        {{ $leave->worker->leave_balance ?? '-' }} / 12 hari
+                                        {{ $leave->worker->leave_balance ?? '-' }} / 12 days
                                     </span>
                                 </td>
                                 </tr>
