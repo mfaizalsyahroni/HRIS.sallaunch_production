@@ -46,8 +46,9 @@
             @endif
         </div>
 
-        {{-- Filter Bulan --}}
+        {{-- Month Filter --}}
         <div class="container mb-3">
+
             <form method="GET" action="{{ route('leave.admin') }}"
                 class="d-flex justify-content-center gap-2 align-items-center flex-wrap">
                 <select name="month" class="form-select w-auto">
@@ -70,6 +71,7 @@
                     <i class="fa fa-filter me-1"></i> Filter
                 </button>
             </form>
+
         </div>
 
 
@@ -124,7 +126,15 @@
                                                 <button type="submit" class="btn btn-danger btn-sm">Reject</button>
                                             </form>
                                         </div>
+                                        
+                                    @elseif ($leave->status === 'approved')
+                                    <span>✅</span>
+                                    
+                                    @elseif ($leave->status === 'rejected')
+                                    <span>❌</span>
+
                                     @else
+                                    {{-- If the status is unknown or empty --}}
                                         -
                                     @endif
                                 </td>

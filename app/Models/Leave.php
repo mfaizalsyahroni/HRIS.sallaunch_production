@@ -30,15 +30,15 @@ class Leave extends Model
     }
 
 
-    // Accessor untuk work_date: Ubah dari Y-m-d menjadi d-m-Y
+    // Accessor for work_date: Change from Y-m-d to d-m-Y
     public function getStartDateAttribute($value)
     {
-        return Carbon::parse($value)->format('d-m-Y');  // Contoh: 05-10-2023
+        return Carbon::parse($value)->format('d-m-Y');  // Example: 05-10-2023
     }
 
     public function getEndDateAttribute($value)
     {
-        return Carbon::parse($value)->format('d-m-Y');  // Contoh: 05-10-2023
+        return Carbon::parse($value)->format('d-m-Y');  // Example: 05-10-2023
     }
 
     // Raw date untuk kalkulasi (tanpa accessor)
@@ -54,7 +54,7 @@ class Leave extends Model
 
     public function setPasswordAttribute($value)
     {
-        // Jika password belum di-hash, hash sekarang
+        // If the password has not been the hashed?, hash it now! W::bcryprt($value)
         if (!str_starts_with($value, '$2y$')) {
             $this->attributes['password'] = bcrypt($value);
         } else {

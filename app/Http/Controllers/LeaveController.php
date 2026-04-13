@@ -210,7 +210,7 @@ class LeaveController extends Controller
                         ->orderBy('created_at', 'desc')
                         ->get();
 
-        // Tampilkan view yang sesuai
+        // Sending data to the View using the helper function compact()
         return view($viewFile, compact('leaves', 'month', 'year'));
     }
 
@@ -225,7 +225,7 @@ class LeaveController extends Controller
 
         // session()->forget('verified_worker');
 
-        return redirect()->back()->with('success', 'Cuti berhasil disetujui.✅');
+        return redirect()->back()->with('acc', 'Cuti berhasil disetujui.✅'); 
     }
 
     public function rejectLeave($id)
