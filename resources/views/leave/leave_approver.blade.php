@@ -25,8 +25,8 @@
 
         {{-- Header --}}
         <div class="container text-center mb-4">
-            <h1 class="text-white py-2 rounded shadow">Admin Panel: Leave Approval</h1>
-            <h3 class="text-warning fw-bold" style="text-shadow: 0 0 10px #ffc107, 0 0 20px #ff9800;">
+            <h1 class="text-white rounded shadow">Admin Panel: Leave Approval</h1>
+            <h3 class="text-warning fw-bold">
                 Leave Requests for This Month
             </h3>
         </div>

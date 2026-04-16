@@ -84,13 +84,23 @@ class PDFController extends Controller
 
         $payroll = (object) $service->calculateMonthly($worker, $month, $year);
 
-        return Pdf::loadView('payroll.salary', compact('payroll', 'worker'))
+        // return Pdf::loadView('payroll.salary', compact('payroll', 'worker'))
+        //     ->setPaper('a4', 'landscape')
+        //     ->setOptions([
+        //         'isHtml5ParserEnabled' => true,
+        //         'isRemoteEnabled' => true,
+        //     ])
+        //     ->download("Preview {$worker->fullname} ({$worker->employee_id}).pdf");
+
+        return Pdf::loadView('payroll.salary_pdf', compact('payroll', 'worker'), ['is_pdf' => true])
             ->setPaper('a4', 'landscape')
             ->setOptions([
                 'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled' => true,
+                'isRemoteEnabled' => true, // matikan remote, semua CSS sudah inline
+                'chroot' => public_path(),
+                'defaultFont' => 'DejaVu Sans',
             ])
-            ->download("Preview {$worker->fullname} ({$worker->employee_id}).pdf");
+            ->download("Payslip {$worker->fullname} ({$worker->employee_id}).pdf");
 
     }
 

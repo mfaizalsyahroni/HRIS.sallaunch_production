@@ -64,7 +64,7 @@ body {
     margin-bottom: 30px;
 }
 
-/* Container Card - Dibuat ramping & pas dengan form */
+
 .leave-balance-card {
     background: #ffffff;
     border-radius: 8px;
@@ -231,3 +231,6 @@ label {
     text-align: center;
     padding-bottom: 10px;
 }
+
+
+

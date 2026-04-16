@@ -1,0 +1,71 @@
+/* Pastikan elemen html & body tidak punya margin sisa */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column; /* Biar card dan tombol tumpuk atas-bawah */
+    justify-content: center; /* Tengah secara vertikal */
+    align-items: center; /* Tengah secara horizontal */
+    
+    /* Background Full Screen */
+    min-height: 100vh;
+    width: 100%;
+    background-image: url('../img/part/cuti.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Background tetap diam saat scroll */
+    
+    padding: 20px; /* Padding agar tidak mepet layar hp */
+    box-sizing: border-box;
+}
+
+/* CARD DIPERKECIL */
+.wrapper {
+    border: 2px solid #333;
+    width: 380px;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.title {
+    font-size: 2em;
+    font-weight: 700;
+    text-align: center;
+    color: #333;
+}
+
+.label {
+    font-size: 16px;
+    color: #555;
+}
+
+.current-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
+}
+
+/* BACK BUTTON DI LUAR */
+.back-outside {
+    margin-top: 40px;
+    text-align: center;
+}
+
+
+.back-outside button {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.back-outside button img {
+    border-radius: 25px;
+}
