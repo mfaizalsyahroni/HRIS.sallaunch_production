@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 
+use App\Models\Worker;
+use App\Services\PayrollService;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-class PdfController extends Controller
+class PDFController extends Controller
 {
     /**
      * Generate dan download PDF dengan ukuran kertas dan orientasi yang bisa diatur.
@@ -62,5 +64,40 @@ class PdfController extends Controller
 
         // Return sebagai download
         return $pdf->download($fileName);
+    }
+
+    //Pratinjau (Preview)
+    public function downloadSalarySlipPdf(PayrollService $service)
+    {
+        $employeeId = session('verified_worker');
+
+        if (!$employeeId) {
+            return redirect()->back()->with('error', 'Session ended, please login again');
+        }
+
+        $worker = Worker::where('employee_id', $employeeId)
+            ->with('salaryGrade')
+            ->firstorFail();
+
+        $month = now()->month;
+        $year = now()->year;
+
+        $payroll = (object) $service->calculateMonthly($worker, $month, $year);
+
+        return Pdf::loadView('payroll.salary', compact('payroll', 'worker'))
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+            ])
+            ->download("Preview {$worker->fullname} ({$worker->employee_id}).pdf");
+
+    }
+
+
+    // Official Monthly ALL Employee Pay Slip
+    public function OfficialMonthlyAllEmployeePaySlip(PayrollService $service)
+    {
+
     }
 }

@@ -86,6 +86,10 @@ class PayrollController extends Controller
 
         $employeeId = session('verified_worker');
 
+        if(!$employeeId) {
+            return redirect()->back()->with('error', 'Session ended, please login again');
+        }
+
         $worker = Worker::where('employee_id', $employeeId)
             ->with('salaryGrade')
             ->firstOrFail();

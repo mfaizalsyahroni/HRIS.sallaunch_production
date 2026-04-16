@@ -2,10 +2,11 @@
 @extends('layouts.app') {{-- Asumsikan ada layout utama, sesuaikan jika perlu --}}
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/feature_leave.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/feature_leavess.css') }}">
 
     <div class="container">
         <div class="wrapper">
+            
             <div class="title">
                 Leave Detail
             </div>

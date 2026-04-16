@@ -206,9 +206,9 @@ class LeaveController extends Controller
 
         // Retrieve leaves data
         $leaves = Leave::whereMonth('created_at', $month)
-                        ->whereYear('created_at', $year)
-                        ->orderBy('created_at', 'desc')
-                        ->get();
+            ->whereYear('created_at', $year)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         // Sending data to the View using the helper function compact()
         return view($viewFile, compact('leaves', 'month', 'year'));
@@ -221,19 +221,27 @@ class LeaveController extends Controller
     public function approveLeave($id)
     {
         $leave = Leave::findOrFail($id);
+
+        $worker = Worker::where('employee_id', $leave->employee_id)->first();
+
+        if ($worker->leave_balance < $leave->total_days) {
+            return redirect()->back()
+                ->with('error', 'Saldo cuti tidak cukup!');
+        }
+
         $leave->update(['status' => 'approved']);
 
-        // session()->forget('verified_worker');
+        // Kurangi saldo cuti
+        $worker->decrement('leave_balance', $leave->total_days);
 
-        return redirect()->back()->with('acc', 'Cuti berhasil disetujui.✅'); 
+
+        return redirect()->back()->with('acc', 'Cuti berhasil disetujui.✅');
     }
 
     public function rejectLeave($id)
     {
         $leave = Leave::findOrFail($id);
         $leave->update(['status' => 'rejected']);
-
-        // session()->forget('verified_worker');
 
         return redirect()->back()->with('rejected', 'Cuti berhasil ditolak.❌');
     }

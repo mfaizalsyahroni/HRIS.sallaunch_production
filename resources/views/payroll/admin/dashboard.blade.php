@@ -156,8 +156,8 @@
                         <tr>
                             <td colspan="7" class="text-center text-danger fw-bold py-4">
                                 <i class="fa fa-folder-open fa-lg mb-2"></i><br>
-                                Data payroll untuk periode ini belum tersedia.<br>
-                                Silakan klik <b>Close Payroll Month</b> terlebih dahulu.
+                                Payroll data for this period is not available<br>
+                                Please click <b>Generate Payroll</b> first.
                             </td>
                         </tr>
                     @endforelse

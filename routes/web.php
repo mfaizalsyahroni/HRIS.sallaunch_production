@@ -18,6 +18,7 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\LearningplanController;
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\IdeaController;
+use App\Http\Controllers\PDFController;     
 
 
 
@@ -357,6 +358,11 @@ Route::get('/payroll/admin', [PayrollController::class, 'adminDashboard'])
 // Worker
 Route::get('/payroll/salary', [PayrollController::class, 'salary'])
     ->name('payroll.salary');
+
+// PDFController
+// Preview Pay Slip
+Route::post('payroll/previewpayslip', [PDFController::class, 'downloadSalarySlipPdf'])
+    ->name('payroll.preview');    
 
 
 //  Selected Month 
