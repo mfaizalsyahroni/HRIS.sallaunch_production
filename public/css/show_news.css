@@ -35,6 +35,12 @@ h3 {
     text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
 }
 
+.label {
+    font-size: 30px;
+    font-weight: bold;
+    color: #333;
+}
+
 /* Alert sukses */
 .notif-success {
     background-color: rgb(76, 175, 80);
