@@ -39,7 +39,7 @@
         <div class="d-flex justify-content-center align-items-center mb-3">
             <form action="{{ route('news.logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="btn btn-outline-danger px-4 fw-bold">
+                <button type="submit" class="btn btn-danger px-4 fw-bold">
                     <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
                 </button>
             </form>

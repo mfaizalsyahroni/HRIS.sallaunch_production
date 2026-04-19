@@ -177,7 +177,21 @@ class NewsController extends Controller
 
     public function logout(Request $request)
     {
-        $request->session()->forget('verified_worker'); 
+        $request->session()->forget('verified_worker');
+
+        // Optionally, you can invalidate the session
+        $request->session()->invalidate();
+
+        // Optionally, regenerate the session token
+        $request->session()->regenerateToken();
+
+        // Redirect the user to a specific page after logout
+        return redirect()->route('home')->with('message', 'You have been logged out successfully.');
+    }
+
+    public function logouts(Request $request)
+    {
+        $request->session()->forget('verified_worker');
 
         // Optionally, you can invalidate the session
         $request->session()->invalidate();

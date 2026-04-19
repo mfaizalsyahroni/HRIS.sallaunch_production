@@ -231,7 +231,7 @@ class LeaveController extends Controller
 
         $leave->update(['status' => 'approved']);
 
-        // Kurangi saldo cuti
+        // Reduce leave balance with decrement (-)
         $worker->decrement('leave_balance', $leave->total_days);
 
 

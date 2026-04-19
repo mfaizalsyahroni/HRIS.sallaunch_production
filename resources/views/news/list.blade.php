@@ -68,7 +68,7 @@
     </div>
 
     <div class="text-center">
-        <a href="{{ route('news.logout') }}" class="btn-soft mt-3">
+        <a href="{{ route('news.logouts') }}" class="btn-soft mt-3">
             <i class="bi bi-house-down"></i> Home
         </a>
     </div>

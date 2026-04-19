@@ -4,9 +4,10 @@
     <link rel="stylesheet" href="{{ asset('css/show_news.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-S...HASH..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-S...HASH..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    
 
     <div class="container mt-4">
         <h3>Dashboard Admin</h3>
@@ -69,5 +70,14 @@
                 @endforeach
             </tbody>
         </table>
+
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <form action="{{ route('news.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-danger px-4 fw-bold">
+                    <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                </button>
+            </form>
+        </div>
     </div>
 @endsection

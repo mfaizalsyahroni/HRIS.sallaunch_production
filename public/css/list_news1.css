@@ -143,6 +143,19 @@
     z-index: 9998 !important;
 }
 
+#modalContent * {
+    position: static !important;
+    float: none !important;
+    max-width: 100% !important;
+}
+
+#modalContent img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
 /*GLOBAL FONT*/
 body, p, .news-excerpt, #modalContent {
     font-family: 'Poppins', sans-serif;

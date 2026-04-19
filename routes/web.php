@@ -121,7 +121,8 @@ Route::prefix('news')->group(function () {
 
     // List all news
     Route::get('/list', [NewsController::class, 'allNewsList'])->name('news.list');
-    Route::get('/logout', [NewsController::class, 'logout'])->name('news.logout');
+    Route::post('/logout', [NewsController::class, 'logout'])->name('news.logout');
+    Route::get('/logouts', [NewsController::class, 'logouts'])->name('news.logouts');
 
 
     // Admin
@@ -177,6 +178,9 @@ Route::prefix('company/admin')->group(function () {
 
     Route::get('/list', [CompanyController::class, 'allList'])
         ->name('company.list');
+        
+    Route::post('/logout', [CompanyController::class, 'logout'])
+        ->name('company.logout');
 });
 
 

@@ -206,7 +206,18 @@ class CompanyController extends Controller
     public function allList()
     {
         $companies = Company::latest()->paginate(12);
-        return view('company.list', compact('companies'));;
+        return view('company.list', compact('companies'));
+        ;
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->forget('verified_worker');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home')->with('message', 'You have been logged out successfully.');
+
     }
 
 }

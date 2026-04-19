@@ -96,8 +96,8 @@ class PDFController extends Controller
             ->setPaper('a4', 'landscape')
             ->setOptions([
                 'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled' => true, // matikan remote, semua CSS sudah inline
-                'chroot' => public_path(),
+                'isRemoteEnabled' => true, // turn off the remote, all the CSS is already inline
+                'chroot' => public_path(), // acc access to public folder
                 'defaultFont' => 'DejaVu Sans',
             ])
             ->download("Payslip {$worker->fullname} ({$worker->employee_id}).pdf");
