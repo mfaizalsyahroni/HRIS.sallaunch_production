@@ -143,11 +143,11 @@
     z-index: 9998 !important;
 }
 
-#modalContent * {
+/* #modalContent * {
     position: static !important;
     float: none !important;
     max-width: 100% !important;
-}
+} */
 
 #modalContent img {
     width: 100%;
