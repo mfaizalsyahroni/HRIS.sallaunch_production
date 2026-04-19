@@ -143,11 +143,13 @@
     z-index: 9998 !important;
 }
 
-/* #modalContent * {
+/* Reset all styles from innerHTML (${content}) 
+to follow the normal modal layout and not be messy */
+#modalContent * {
     position: static !important;
     float: none !important;
     max-width: 100% !important;
-} */
+}
 
 #modalContent img {
     width: 100%;

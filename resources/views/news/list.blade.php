@@ -88,6 +88,12 @@
                 document.getElementById('readMoreModalLabel').style.color = '#073362';
 
 
+                // Teoritis modalContent.innerHTML = `${content}`; 
+                // ➡️if you inject raw HTML from the database into a modal, including strange styles such as:
+
+                // position: absolute
+                // float: left
+                // width: large
                 document.getElementById('modalContent').innerHTML = `
                     <img src="${thumb}" class="img-fluid mb-3 rounded">
                 ${content}
