@@ -34,16 +34,16 @@
                 </script>
             @endif
 
-            <form action="{{ route('login') }}" method="POST" class="form-login">
+            <form action="{{ route('login') }}" method="POST" class="form-login" autocomplete="off">
                 @csrf
                 <div class="form-group mb-3 fw-bold">
                     <label for="employee_id">Employee ID</label>
-                    <input type="text" name="employee_id" required class="input-login" autocomplete="off">
+                    <input type="text" name="employee_id" required class="input-login" placeholder="Input your unique ID...">
                 </div>
 
                 <div class="form-group mb-4 fw-bold">
                     <label for="password">Password</label>
-                    <input type="password" name="password" required class="input-login" autocomplete="off">
+                    <input type="password" name="password" required class="input-login" placeholder="Input your secret password...">
                 </div>
 
                 <button type="submit" class="button-login w-100 fw-bold">Submit</button>

@@ -44,7 +44,7 @@
                         <tbody>
                             @foreach ($pendingProgress as $progress)
                                 <tr>
-                                    <td>{{ $progress->worker->fullname }}</td>
+                                    <td>{{ $progress->worker?->fullname }}</td>
                                     <td>{{ $progress->module->module_name }}</td>
                                     <td>
                                         {{-- Form Penilaian --}}

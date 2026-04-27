@@ -77,7 +77,7 @@ class CertificationController extends Controller
 
         return view('certification.staff', compact('certifications'));
     }
-
+    
     /* 
         MT VIEW (Dulu Index)
     = */
@@ -105,7 +105,7 @@ class CertificationController extends Controller
     {
         $request->validate([
             'learning_progress_id' => 'required|exists:learning_progress,id',
-            'score' => 'required|in:A,B,C',
+            'score' => 'required|in:A,B,C,D',
             'notes' => 'nullable|string',
         ]);
 
@@ -124,7 +124,7 @@ class CertificationController extends Controller
             return back()->withErrors(['message' => 'Sudah dinilai sebelumnya.']);
         }
 
-        $status = in_array($request->score, ['A', 'B','C'], true) ? 'passed' : 'failed';
+        $status = in_array($request->score, ['A', 'B'], true) ? 'passed' : 'failed';
 
         Certification::create([
             'learning_progress_id' => $progress->id,
@@ -183,6 +183,6 @@ class CertificationController extends Controller
     public function logout(Request $request)
     {
         $request->session()->flush();
-        return redirect()->route('certification.verify')->with('message', 'Logged out');
+        return redirect()->route('home')->with('message', 'Logged out');
     }
 }

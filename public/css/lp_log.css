@@ -1,60 +1,44 @@
-/* RESET */
-*,
-html,
-body {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', Arial, sans-serif; /* Menggunakan Poppins jika ada, atau Arial */
 }
 
-/* BODY BACKGROUND (2 IMAGE + CERAH) */
 body {
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background:
+    background: 
         linear-gradient(
             rgba(255, 255, 255, 0.45),
             rgba(255, 255, 255, 0.45)
         ),
         url('../img/home/rm.png');
-
-    background-size: cover;       /* 🔥 FULL SCREEN */
-    background-position: center;  /* tetap center */
-    background-repeat: no-repeat; /* ga diulang */
-    background-attachment: fixed; /* efek wallpaper */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 
-
-/* FIX CENTER TANPA FLEX DI BODY */
-.container {
+.container-fluid {
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
 
-/* WRAPPER FORM */
 .wrapper {
     position: relative;
-    width: 120%;
-    max-width: 520px;
+    width: 100%;
+    max-width: 450px;
     padding: 40px 30px;
-    border-radius: 10px;
-
-    background-color: rgba(255, 255, 255, 0.92);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-.wrapper {
-    position: relative;
-    z-index: 9999 !important;
-    pointer-events: auto !important;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
 }
 
 
@@ -63,93 +47,97 @@ body {
     position: absolute;
     inset: 0;
     background: url('../img/home/roadmap.png') center/contain no-repeat;
-    opacity: 0.15;
+    opacity: 0.1;
     z-index: 0;
-    pointer-events: none; /* 🔥 FIX */
+    pointer-events: none;
 }
 
-.form-login,
-.form-group,
-input,
-label,
-button {
+
+.subtitle {
+    text-align: center;
+    margin-bottom: 30px;
     position: relative;
     z-index: 1;
 }
 
-
-/* TITLE */
-.title {
-    font-size: 2em;
-    text-align: center;
-    margin-bottom: 20px;
+.subtitle h5 {
+    font-size: 16px;
+    font-weight: 700;
     color: #1d1818;
+    margin-bottom: 8px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-/* FORM */
+.subtitle h6 {
+    display: inline-block;
+    background: #e1f5fe;
+    color: #0288d1;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+
+form {
+    position: relative;
+    z-index: 1;
+}
+
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 label {
     font-size: 16px;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     display: block;
     color: #121212;
-    font-weight: bold;
+    font-weight: 600;
 }
 
-/* INPUT */
 .input-login {
-    border: 1px solid #ccc;
-    padding: 10px;
+    border: 1px solid #ddd;
+    padding: 12px 15px;
     font-size: 16px;
-    border-radius: 5px;
+    border-radius: 8px;
     width: 100%;
+    transition: all 0.3s ease;
 }
 
 .input-login:focus {
     border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
     outline: none;
 }
 
-/* BUTTON */
+/* BUTTON LOGIN */
 .button-login {
     border: none;
-    padding: 10px;
+    padding: 14px;
     font-size: 18px;
-    margin-top: 20px;
+    font-weight: 700;
+    margin-top: 10px;
     background-color: #007bff;
     color: white;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 8px;
     transition: 0.3s;
     width: 100%;
 }
 
 .button-login:hover {
     background-color: #0056b3;
-}
-
-/* NOTIFICATION */
-.notif-login {
-    background-color: tomato;
-    font-style: italic;
-    text-align: center;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    color: white;
+    transform: translateY(-1px);
 }
 
 /* RESPONSIVE */
-@media (max-width: 576px) {
+@media (max-width: 480px) {
     .wrapper {
-        width: 90%;
         padding: 30px 20px;
-    }
-
-    .title {
-        font-size: 1.6em;
     }
 }

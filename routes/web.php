@@ -18,7 +18,7 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\LearningplanController;
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\IdeaController;
-use App\Http\Controllers\PDFController;     
+use App\Http\Controllers\PDFController;
 
 
 
@@ -178,7 +178,7 @@ Route::prefix('company/admin')->group(function () {
 
     Route::get('/list', [CompanyController::class, 'allList'])
         ->name('company.list');
-        
+
     Route::post('/logout', [CompanyController::class, 'logout'])
         ->name('company.logout');
 });
@@ -208,6 +208,8 @@ Route::delete('/personal/delete/{id}', [PersonalController::class, 'destroy'])
 Route::get('/personal/list', [PersonalController::class, 'allList'])
     ->name('personal.list');
 
+Route::post('/personal/logout', [PersonalController::class, 'logout'])
+    ->name('personal.logout');    
 
 
 
@@ -366,7 +368,7 @@ Route::get('/payroll/salary', [PayrollController::class, 'salary'])
 // PDFController
 // Preview Pay Slip
 Route::post('payroll/previewpayslip', [PDFController::class, 'downloadSalarySlipPdf'])
-    ->name('payroll.preview');    
+    ->name('payroll.preview');
 
 
 //  Selected Month 
@@ -405,7 +407,7 @@ Route::get('/learningplan/staff', [LearningplanController::class, 'staff'])
 Route::post('/learningplan/upload-feedback', [LearningplanController::class, 'uploadFeedback'])
     ->name('learningplan.uploadFeedback');
 
-Route::get('/learnigplan/logout', [LearningplanController::class, 'Logout'])
+Route::post('/learnigplan/logout', [LearningplanController::class, 'Logout'])
     ->name('learningplan.logout');
 
 
@@ -414,10 +416,8 @@ Route::match(['get', 'post'], 'admin', [LearningplanController::class, 'adminDas
 Route::get('admin/delete/{id}', [LearningplanController::class, 'deleteModule'])->name('learningplan.admin.delete');
 
 
+
 //CERTIFICATION
-
-
-
 Route::prefix('certification')->group(function () {
     // Login
     Route::get('/verify', [CertificationController::class, 'verify'])->name('certification.verify');
@@ -435,6 +435,8 @@ Route::prefix('certification')->group(function () {
 });
 
 
+//ACHIEVMENTS
+
 //VERIFY
 Route::get('/achievements/verify', [AchievementController::class, 'verify'])
     ->name('achievement.verify');
@@ -444,6 +446,7 @@ Route::post('achievements/verify', [AchievementController::class, 'verifyWorker'
 
 
 
+//IDEA
 
 //VERIFY
 Route::get('/idea/verify', [IdeaController::class, 'verify'])

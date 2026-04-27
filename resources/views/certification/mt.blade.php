@@ -34,7 +34,7 @@
                         @foreach ($pendingProgress as $progress)
                             <tr>
                                 <td>
-                                    <strong>{{ $progress->worker->fullname }}</strong><br>
+                                    <strong>{{ $progress->worker?->fullname }}</strong><br>
                                     <small class="text-muted">{{ $progress->employee_id }}</small>
                                 </td>
                                 <td>{{ $progress->module->module_name }}</td>

@@ -36,7 +36,7 @@ class LearningplanController extends Controller
             return back()->withErrors(['Your employee ID or Password is wrong']);
         }
 
-        session(['verified_worker' =>  $worker->employee_id]);
+        session(['verified_worker' => $worker->employee_id]);
         return redirect()->route('learningplan.staff');
     }
 
@@ -50,23 +50,27 @@ class LearningplanController extends Controller
         }
 
         // $worker = Worker::findOrFail($workerSession);
-        
+
         $worker = Worker::where('employee_id', $workerSession)->firstOrFail();
 
         $modules = LearningModule::orderBy('id', 'ASC')->get();
 
-        $completedModules = LearningProgress::where('employee_id', $workerSession)
-            ->where('status', 'completed')
+        $uploadedModules = LearningProgress::where('worker_id', $worker->id)
+            ->whereIn('status', ['not_started', 'in_progress', 'completed'])
             ->pluck('module_id')
             ->toArray();
 
+        //Determine the status per module    
+        $workerStatus = LearningProgress::where('worker_id', $worker->id)
+            ->first()?->status ?? 'not_started';
+
         foreach ($modules as $module) {
-            $module->completed = in_array($module->id, $completedModules);
+            $module->completed = in_array($module->id, $uploadedModules);
         }
 
-        $progress = count($completedModules) * 20;
+        $progress = count($uploadedModules) * 20;
 
-        return view('learningplan.staff', compact('modules', 'progress'));
+        return view('learningplan.staff', compact('modules', 'progress', 'worker', 'workerStatus'));
     }
 
     public function uploadFeedback(Request $request)
@@ -77,21 +81,49 @@ class LearningplanController extends Controller
                 ->withErrors(['Please verify first']);
         }
 
+        $worker = Worker::where('employee_id', $workerSession)->firstOrFail();
+
         $request->validate([
             'module_id' => 'required|exists:learning_modules,id',
             'feedback_video' => 'required|mimes:mp4,mov,avi|max:50000',
         ]);
 
+        //existence check
+        $alreadyUploaded = LearningProgress::where('employee_id', $worker->id)
+            ->where('module_id', $request->module_id)
+            ->exists();
+
+        //guard clause    
+        if ($alreadyUploaded) {
+            return back()->withErrors(['Message' => 'You have already uploaded feedback for this module']);
+        }
+
+
         $path = $request->file('feedback_video')
             ->store('feedback_videos', 'public');
 
         LearningProgress::create([
+            'worker_id' => $worker->id,  //test
             'employee_id' => $workerSession,
+            'fullname' => $worker->fullname, //test2
+            'role' => $worker->role, //test3
             'module_id' => $request->module_id,
             'feedback_video' => $path,
-            'status' => 'completed',
+            'status' => 'in_progress',
             'progress_percent' => 20,
         ]);
+
+        // Calculate the total available modules
+        $totalModules = LearningModule::count();
+
+        // Calculate how many modules this worker has submitted
+        $submittedCount = LearningProgress::where('worker_id', $worker->id)->count();
+
+        // If all modules are submitted → update ALL progress for this worker to completed
+        if ($submittedCount >= $totalModules) {
+            LearningProgress::where('worker_id', $worker->id)
+                ->update(['status' => 'completed']);
+        }
 
         return back()->with('success', 'Feedback uploaded successfully!');
     }

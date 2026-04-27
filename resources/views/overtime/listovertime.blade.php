@@ -20,12 +20,48 @@
             @endif
         </div>
 
+        {{-- Y-m Filter --}}
+        <div class="container mb-3">
+            {{-- sending data via method GET for so that filter can bookmarked pr shared --}}
+            <form action="{{ route('overtime.list') }}" method="GET"
+                class="d-flex justify-content-center align-items-center  gap-2 flex wrap">
+
+                <select name="month" class="form-select w-auto">
+                    @foreach (range(1, 12) as $m)
+                        <option value="{{ $m }}" {{ $m == $month ? 'selected' : '' }}>
+                            {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <select name="year" class="form-select w-auto">
+                    @foreach (range(date('Y') - 5, date('Y') + 1) as $y)
+                        <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>
+                            {{ $y }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary btn-sm fw-bold text-white py-1">
+                        <i class="fa fa-filter me-1"></i> Filter
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
         <div class="container attendance-container mt-4">
 
             {{-- SUCCESS MESSAGE --}}
             @if (session('success'))
                 <p style="color: green; text-align:center;">
                     {{ session('success') }}
+                    <script>
+                        setTimeout(function() {
+                            document.querySelector('p[style="color: green; text-align:center;"]').style.display = 'none';
+                        }, 8000);
+                    </script>
                 </p>
             @endif
 

@@ -45,8 +45,9 @@ return new class extends Migration {
             ==========================
             */
 
-            $table->enum('status', ['pending', 'completed'])
-                ->default('pending');
+            $table->enum('status', ['not_started', 'in_progress', 'completed'])
+                ->default('not_started');
+            //created ulang!    
 
             $table->integer('progress_percent')
                 ->default(0);

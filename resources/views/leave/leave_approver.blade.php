@@ -79,30 +79,30 @@
         <div class="container table-responsive">
             <div class="rounded-4 overflow-hidden shadow border">
                 <table class="table table-bordered table-striped table-hover align-middle text-center mb-0">
-                    <thead>
-                        <tr>
-                            <th class="bg-warning text-light">Employee ID</th>
-                            <th class="bg-warning text-light">Name</th>
-                            <th class="bg-warning text-light">Leave Types</th>
-                            <th class="bg-warning text-light">Start Date</th>
-                            <th class="bg-warning text-light">End Date</th>
-                            <th class="bg-warning text-light">Leave Reason</th>
-                            <th class="bg-warning text-light">Status</th>
-                            <th class="bg-warning text-light">Actions</th>
-                            <th class="bg-warning text-light">Detail</th>
-                            <th class="bg-warning text-light">Total Days</th>
-                            <th class="bg-warning text-light">Leave Balance</th>
+                    <thead class="border-top-0">
+                        <tr class="border-top-0">
+                            <th class="bg-secondary bg-gradient  text-light text-nowrap border-top-0">Employee ID</th>
+                            <th class="bg-secondary bg-gradient  text-light border-top-0">Name</th>
+                            <th class="bg-secondary bg-gradient  text-light text-nowrap border-top-0">Leave Types</th>
+                            <th class="bg-secondary bg-gradient  text-light text-nowrap border-top-0">Start Date</th>
+                            <th class="bg-secondary bg-gradient  text-light text-nowrap border-top-0">End Date</th>
+                            <th class="bg-secondary bg-gradient  text-light border-top-0" style="min-width: 100px;">Leave Reason</th>
+                            <th class="bg-secondary bg-gradient  text-light border-top-0">Status</th>
+                            <th class="bg-secondary bg-gradient  text-light border-top-0">Actions</th>
+                            <th class="bg-secondary bg-gradient  text-light border-top-0">Detail</th>
+                            <th class="bg-secondary bg-gradient  text-light text-nowrap border-top-0">Total Days</th>
+                            <th class="bg-secondary bg-gradient  text-light text-nowrap border-top-0">Leave Balance</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($leaves as $leave)
                             <tr>
-                                <td>{{ $leave->employee_id }}</td>
-                                <td>{{ $leave->fullname }}</td>
-                                <td>{{ $leave->leave_type }}</td>
-                                <td>{{ $leave->start_date }}</td>
-                                <td>{{ $leave->end_date }}</td>
-                                <td>{{ $leave->leave_reason }}</td>
+                                <td class="fw-bold text-primary">{{ $leave->employee_id }}</td>
+                                <td class="text-nowrap text-start">{{ $leave->fullname }}</td>
+                                <td><span class="badge bg-info text-dark">{{ $leave->leave_type }}</span></td>
+                                <td class="small">{{ $leave->start_date }}</td>
+                                <td class="small">{{ $leave->end_date }}</td>
+                                <td class="text-start small">{{ $leave->leave_reason }}</td>
                                 <td>
                                     @if ($leave->status === 'pending')
                                         <span class="badge bg-warning text-dark">Pending</span>
@@ -142,8 +142,8 @@
                                     <a href="{{ route('leave.show', $leave->id) }}"
                                         class="btn btn-primary btn-sm">Detail</a>
                                 </td>
-                                <td>{{ $leave->total_days }} days</td>
-                                <td>
+                                <td class="small text-nowrap">{{ $leave->total_days }} days</td>
+                                <td class="text-nowrap">
                                     <span
                                         class="badge {{ ($leave->worker->leave_balance ?? 12) <= 3 ? 'bg-danger' : 'bg-success' }}">
                                         {{ $leave->worker->leave_balance ?? '-' }} / 12 days
@@ -160,7 +160,7 @@
         <div class="mt-4 mb-4">
             <form action="{{ route('leave.logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="btn btn-outline-danger px-4 fw-bold">
+                <button type="submit" class="btn btn-danger px-4 fw-bold">
                     <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
                 </button>
             </form>

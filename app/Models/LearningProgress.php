@@ -53,6 +53,6 @@ class LearningProgress extends Model
 
     public function certification()
     {
-        return $this->hasOne(Certification::class);
+        return $this->hasOne(Certification::class, 'learning_progress_id');
     }
 }

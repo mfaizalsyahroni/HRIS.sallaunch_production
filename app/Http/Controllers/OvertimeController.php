@@ -131,6 +131,13 @@ class OvertimeController extends Controller
         $selectedWorker = null;
         $worker = null;
 
+        $month = request()->query('month', Carbon::now()->format('m'));
+        $year = request()->query('year', Carbon::now()->format('Y'));
+
+        $query->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year);
+
+
         // admin
         if ($session === 'ADMIN_IT_HRIS') {
             $workers = Worker::orderBy('fullname')->get();
@@ -153,7 +160,9 @@ class OvertimeController extends Controller
             'overtimes' => $query->get(),
             'workers' => $workers,
             'worker' => $worker,
-            'selectedWorker' => $selectedWorker
+            'selectedWorker' => $selectedWorker,
+            'month' => $month,
+            'year' => $year,
         ]);
 
     }
@@ -199,7 +208,7 @@ class OvertimeController extends Controller
 
             if ($hoursWorked < 8) {
                 return back()->withErrors([
-                    'message' => 'Overtime weekday hanya bisa dimulai setelah kerja minimal 8 jam'
+                    'message' => ' Weekday Overtime can only start after working at least 8 hours.'
                 ]);
             }
 
@@ -211,10 +220,10 @@ class OvertimeController extends Controller
             'employee_id' => $worker->employee_id,
             'fullname' => $worker->fullname,
             'overtime_date' => $today,
-            'start_time' => now()->format('H:i:s'),
+            'start_time' => now(),
         ]);
 
-        return back()->with('success', 'Overtime dimulai');
+        return back()->with('success', 'Overtime begins');
     }
 
 
@@ -240,10 +249,10 @@ class OvertimeController extends Controller
 
 
         $end = now();
-        $dateOnly = Carbon::parse($overtime->overtime_date)->format('Y-m-d'); // '2026-03-09'
 
-        $start = Carbon::parse($dateOnly . ' ' . $overtime->start_time);   // '2026-03-09 04:16:23'
-        $endFull = Carbon::parse($dateOnly . ' ' . $end->format('H:i:s'));
+        $start = Carbon::parse($overtime->start_time);   // '2026-03-09 04:16:23'
+
+        $endFull = Carbon::parse($end->format('Y-m-d H:i:s'));
 
 
 
@@ -280,7 +289,7 @@ class OvertimeController extends Controller
 
             $clockIn = Carbon::parse($attendance->clock_in_time);
             $clockOut = Carbon::parse($attendance->clock_out_time);
-            
+
             if ($clockIn->diffInHours($clockOut) < 8) {
                 return back()->withErrors(['Overtime weekday hanya bisa setelah kerja minimal 8 jam']);
             }

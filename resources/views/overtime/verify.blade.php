@@ -47,11 +47,11 @@
                 @csrf
                 <div class="mb-3">
                     <label class="form-label fw-bold">Employee ID</label>
-                    <input type="text" name="employee_id" class="form-control" required>
+                    <input type="text" name="employee_id" required class="form-control" placeholder="Input your Unique ID...">
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold">Password</label>
-                    <input type="password" name="password" class="form-control" required>
+                    <input type="password" name="password" required class="form-control" placeholder="Input your secret password...">
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Submit</button>
             </form>
@@ -61,7 +61,7 @@
     {{-- Logout Button --}}
     <form action="{{ route('overtime.logout') }}" method="POST">
         @csrf
-        <button type="submit" class="btn btn-outline-danger w-100 fw-bold">
+        <button type="submit" class="btn btn-danger w-100 fw-bold">
             <i class="bi bi-box-arrow-right me-2"></i>
             Logout
         </button>

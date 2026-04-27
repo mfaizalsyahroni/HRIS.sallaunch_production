@@ -185,7 +185,7 @@ class LeaveController extends Controller
     {
         $worker = session('verified_worker');
 
-        // Validasi role yang boleh akses adminIndex
+        // validation for role that can access adminIndex
         $allowedRoles = ['Admin IT HRIS'];
 
         if (!$worker || !in_array(trim($worker['role']), $allowedRoles)) {
@@ -193,7 +193,7 @@ class LeaveController extends Controller
                 ->withErrors(['error' => 'Please complete verification first']);
         }
 
-        // Tentukan view sesuai tipe admin
+        // Definition view by type of admin
         if ($worker['employee_id'] == 110 && trim($worker['role']) == 'Admin IT HRIS') {
             $viewFile = 'leave.leave_approver';   // halaman admin khusus pakai look1.css
         } else {

@@ -85,7 +85,7 @@ class PersonalController extends Controller
     public function update(Request $request, $id)
     {
         $personal = PersonalInfo::findOrFail($id);
-        
+
 
         // VALIDASI WAJIB (minimal)
         $validated = $request->validate([
@@ -166,6 +166,22 @@ class PersonalController extends Controller
 
         // Kirim data ke view list.blade.php
         return view('personal.list', compact('personalInfos'));
+    }
+
+
+
+    public function logout(Request $request)
+    {
+
+        $request->session()->forget('verified_worker');
+
+        // Optionally, you can invalidate the session
+        $request->session()->invalidate();
+
+        // Optionally, regenerate the session token
+        $request->session()->regenerateToken();
+        
+        return redirect()->route('home');
     }
 
 

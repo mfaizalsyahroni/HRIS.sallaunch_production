@@ -4,13 +4,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         integrity="sha512-S...HASH..." crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+
     <div class="container">
 
         <!-- Header -->
         <div class="text-center py-4" style="background-color: #f0f4f8; border-radius: 12px;">
             <h2 class="fw-bold">📘 Staff Learning Plan Modules</h2>
-            <p class="text-muted">Complete modules and upload feedback video (Min 3 menit)</p>
+            <p class="text-muted mb-0">
+                Welcome, {{ $worker->fullname }}
+            <p class="text-muted">
+                ( {{ $worker->role }} )
+            </p>
+            </p>
+            <p class="text-muted">Complete modules and upload feedback video ( Min 3 minutes )</p>
         </div>
 
         <!-- Progress -->
@@ -35,14 +41,22 @@
             <!-- Title and Info -->
             <div class="ms-2">
                 <h5 class="fw-bold mb-2">
-                    <i class="bi bi-trophy"></i> Kemajuan Anda
+                    <i class="bi bi-trophy"></i> Your Progress
                 </h5>
-                <p class="mb-0">Anda telah menyelesaikan {{ $progress }}% dari modul belajar.</p>
+                @if ($workerStatus === 'not_started')
+                    <span class="badge bg-secondary fs-6 px-3 py-2">⬜ Not Started</span>
+                @elseif ($workerStatus === 'in_progress')
+                    <span class="badge text-dark fs-6 px-3 py-2"  style="background-color: #f0f4f8;">🔄 In Progress</span>
+                @elseif ($workerStatus === 'completed')
+                    <span class="badge bg-success fs-6 px-3 py-2">✅ Completed</span>
+                @endif
+                <p class="mb-0">You have completed {{ $progress }}% of the learning modules.</p>
             </div>
         </div>
 
         <!-- Modules -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"  style="background-color: #f0f4f8; border-radius: 12px;">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 py-4"
+            style="background-color: #f0f4f8; border-radius: 12px;">
             @foreach ($modules as $module)
                 <div class="col">
                     <div class="card shadow-sm border-0 rounded-4 overflow-hidden h-100 d-flex flex-column">
@@ -77,13 +91,15 @@
                 </div>
             @endforeach
         </div>
+
         <div class="d-flex justify-content-center py-4">
-            <form action="{{ route('overtime.logout') }}" method="POST">
+            <form action="{{ route('learningplan.logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="btn btn-outline-danger px-4">
+                <button type="submit" class="btn btn-outline-danger px-4 py-2 fw-bold shadow-sm">
                     <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
                 </button>
             </form>
         </div>
+
     </div>
 @endsection

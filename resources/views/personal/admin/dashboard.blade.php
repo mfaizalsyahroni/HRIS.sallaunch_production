@@ -8,6 +8,7 @@
     <div class="container mt-4">
         <h2>Personal Dashboard (CRUD Admin)</h2>
 
+
         {{-- Flash Message --}}
         @if (session('message'))
             <div class="alert alert-success">{{ session('message') }}</div>
