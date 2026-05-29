@@ -23,9 +23,9 @@ class Attendance extends Model
         return $this->belongsTo(Worker::class, 'employee_id', 'employee_id');
     }
 
-    // Accessor untuk work_date: Ubah dari Y-m-d menjadi d-m-Y
+    // Accessor specfically for work_date: replace from format ( Y-m-d ) to format ( d-m-Y ) for view blade
     public function getWorkDateAttribute($value)
     {
-        return Carbon::parse($value)->format('d-m-Y');  // Contoh: 05-10-2023
-    }
+        return Carbon::parse($value)->format('d-m-Y');  // Example: 05-10-2023
+    } //Eloquent Accessor (implicit invocation)
 }

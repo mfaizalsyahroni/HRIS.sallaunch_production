@@ -55,4 +55,6 @@ class LearningProgress extends Model
     {
         return $this->hasOne(Certification::class, 'learning_progress_id');
     }
+
+
 }

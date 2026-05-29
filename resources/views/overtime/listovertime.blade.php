@@ -51,19 +51,24 @@
 
         </div>
 
-        <div class="container attendance-container mt-4">
-
-            {{-- SUCCESS MESSAGE --}}
-            @if (session('success'))
-                <p style="color: green; text-align:center;">
+        {{-- fm --}}
+        @if (session('success'))
+            <div class="container mb-2">
+                <p class="alert flash-message text-center mb-0"
+                    style="background-color: #f0fdf4; color: #166534; padding: 10px 20px; border-radius: 6px; width: fit-content; margin: 0 auto; border: 1px solid #dcfce7;">
                     {{ session('success') }}
-                    <script>
-                        setTimeout(function() {
-                            document.querySelector('p[style="color: green; text-align:center;"]').style.display = 'none';
-                        }, 8000);
-                    </script>
                 </p>
-            @endif
+                <script>
+                    setTimeout(function() {
+                        document.querySelector('.flash-message').remove();
+                    }, 8000);
+                </script>
+            </div>
+        @endif
+
+
+        {{-- #842029 --}}
+        <div class="container attendance-container mt-4">
 
             {{-- ERROR MESSAGE --}}
             @if ($errors->any())

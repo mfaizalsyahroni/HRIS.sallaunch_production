@@ -223,7 +223,7 @@ class OvertimeController extends Controller
             'start_time' => now(),
         ]);
 
-        return back()->with('success', 'Overtime begins');
+        return back()->with('success', 'Overtime Begins');
     }
 
 

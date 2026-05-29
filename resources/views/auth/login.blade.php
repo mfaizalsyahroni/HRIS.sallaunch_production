@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/log_absensi.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/log_absensi1.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -9,7 +9,7 @@
 
 
     <div class="d-flex flex-column justify-content-between align-items-center min-vh-100 min-vw-100 pt-5"
-        style="background: url('{{ asset('img/home/login.jpg') }}') no-repeat center center; background-size: cover; padding: 2rem 0;">
+        style="background: url('{{ asset('img/home/login.jpg') }}') no-repeat center center; background-size: cover; padding: 2rem 0; overflow: hidden;">
 
         <!-- Wrapper login di tengah -->
         <div class="wrapper p-4 bg-white bg-opacity-75 rounded shadow"

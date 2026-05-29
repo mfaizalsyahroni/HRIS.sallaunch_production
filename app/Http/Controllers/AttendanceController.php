@@ -14,7 +14,7 @@ class AttendanceController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $work_date = now()->toDateString();
+        $work_date = now()->toDateString(); //YYYY-MM-DD
         $employee_id = $user->employee_id;
 
         // Retrieve attendance records for the authenticated user for today

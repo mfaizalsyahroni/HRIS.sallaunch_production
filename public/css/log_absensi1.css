@@ -4,6 +4,7 @@ body {
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
+    overflow: hidden;
 }
 
 .container {
@@ -61,7 +62,7 @@ label {
     border: none;
     padding: 10px;
     font-size: 18px;
-    margin-top: 20px;
+    margin-top: 10px;
     background-color: #007bff;
     color: white;
     cursor: pointer;

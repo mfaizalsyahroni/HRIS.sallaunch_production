@@ -60,9 +60,19 @@ class CertificationController extends Controller
         return redirect()->route('certification.staff');
     }
 
-    /* 
-        STAFF VIEW
-     */
+
+    public function broadcast(Request $request)
+    {
+        if (session('verified_role') !== 'ADMIN_IT_HRIS') {
+            abort(403);
+        }
+
+        $request->validate(['message' => 'required|string|max:255']);
+
+        cache()->put('admin_broadcast', $request->message, now()->addDays(30));
+
+        return back()->with('success', 'Pesan berhasil dikirim ke semua staff!');
+    }
 
     public function staff()
     {
@@ -75,9 +85,11 @@ class CertificationController extends Controller
             ->latest()
             ->get();
 
-        return view('certification.staff', compact('certifications'));
+        $adminAlert = cache()->get('admin_broadcast');
+
+        return view('certification.staff', compact('certifications', 'adminAlert'));
     }
-    
+
     /* 
         MT VIEW (Dulu Index)
     = */

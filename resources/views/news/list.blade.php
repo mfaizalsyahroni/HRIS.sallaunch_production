@@ -57,17 +57,17 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="readMoreModalLabel"></h5>
+                    <h4 class="modal-title modal-news-title" id="readMoreModalLabel"></h4>
                     <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
-                <div class="modal-body" id="modalContent"></div>
+                <div class="modal-body modal-news-body" id="modalContent"></div>
 
             </div>
         </div>
     </div>
 
-    <div class="text-center">
+    <div class="text-center py-4">
         <a href="{{ route('news.logouts') }}" class="btn-soft mt-3">
             <i class="bi bi-house-down"></i> Home
         </a>
@@ -87,17 +87,10 @@
                 document.getElementById('readMoreModalLabel').textContent = title;
                 document.getElementById('readMoreModalLabel').style.color = '#073362';
 
-
-                // Teoritis modalContent.innerHTML = `${content}`; 
-                // ➡️if you inject raw HTML from the database into a modal, including strange styles such as:
-
-                // position: absolute
-                // float: left
-                // width: large
                 document.getElementById('modalContent').innerHTML = `
-                    <img src="${thumb}" class="img-fluid mb-3 rounded">
-                ${content}
-                `;
+            <img src="${thumb}" class="img-fluid mb-3 rounded">
+            <div class="modal-paragraphs">${content}</div>
+        `;
 
                 const modal = new bootstrap.Modal(document.getElementById('readMoreModal'));
                 modal.show();

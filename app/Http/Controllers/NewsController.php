@@ -92,7 +92,7 @@ class NewsController extends Controller
         // save as fitur edit
         // <form method="POST" action="{{ route('news.admin.update', $news->id) }}">
         return redirect()->route('news.admin.dashboard')
-            ->with('message1', 'Berita berhasil diupdate ✅');
+            ->with('message1', 'News successfully updated ✅');
     }
 
     public function destroy($id)
@@ -111,7 +111,7 @@ class NewsController extends Controller
         // Delete the database record.
         $news->delete();
 
-        return back()->with('message1', 'Berita berhasil dihapus ✅');
+        return back()->with('message1', 'News successfully deleted ✅');
     }
 
     protected function checkAdmin()
@@ -127,13 +127,14 @@ class NewsController extends Controller
     {
         // This function handles saving the data, for both new news (Create) and existing news (Update).
 
+        $thumbnailRule = $news && $news->exists ? 'nullable' : 'required';
 
         // 1. Check all inputs from the form against defined rules (Validation).
         $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|string',
             'content' => 'required',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'thumbnail' => $thumbnailRule . '|image|mimes:jpeg,png,jpg,gif|max:2048',
             'slug' => 'nullable|string|unique:news,slug' . ($news ? ',' . $news->id : ''),
         ]);
 
@@ -143,7 +144,7 @@ class NewsController extends Controller
 
         $news->title = $request->title;
         $news->category = $request->category;
-        $news->content = $request->content;
+        $news->content = '<p>' . implode('</p><p>', explode("\n", trim($request->content))) . '</p>';
         $news->slug = $request->slug ?: Str::slug($request->title);
 
 

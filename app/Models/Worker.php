@@ -165,6 +165,12 @@ class Worker extends Authenticatable
         return $this->salaryGrade->position ?? $this->role;
     }
 
+    public function learning_modules()
+    {
+        return $this->belongsToMany(LearningModule::class, 'learning_progress', 'employee_id', 'module_id')
+                    ->withPivot(['status', 'progress_procent', 'completed_at'])
+                    ->withTimestamps();
+    }
 
     // public function ideas()
     // {

@@ -39,12 +39,15 @@
                 </form>
 
             
+
+                
                 <form method="GET" action="{{ route('overtime.admin.dashboard') }}"
                     class="d-flex align-items-center gap-3">
 
                     <label class="fw-semibold mb-0" style="width: 130px;">
                         Select Date
                     </label>
+                    {{-- add select week maybe --}}
 
                     <input type="date" name="date" class="form-control" style="width: 260px;"
                         value="{{ request('date') }}" onchange="this.form.submit()">

@@ -7,6 +7,37 @@
         integrity="sha512-S...HASH..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            /* Cegah scroll */
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+    @if ($errors->any())
+        <div class="alert flash-message"
+            style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); 
+            z-index: 9999; background-color: #f8d7da; color: #842029; 
+            padding: 10px 20px; border-radius: 6px; white-space: nowrap;">
+            <i class="bi bi-x-circle-fill me-1"></i>
+            {{ $errors->first('message') }}
+        </div>
+    @endif
+
+
+    <script>
+        document.querySelectorAll('.flash-message').forEach(el => {
+            setTimeout(() => {
+                el.remove();
+            }, 8000);
+        });
+    </script>
+
     <div class="container-fluid d-flex flex-column justify-content-center align-items-center min-vh-100"
         style="background: url('{{ asset('img/home/sertifikat.png') }}')  no-repeat center; background-size: 500px; position: relative;">
 
@@ -40,10 +71,10 @@
 
         <div style="flex: 1;"></div> {{-- bottom spacer --}}
 
-        <div class="mb-2">
+        <div class="mb-4">
             <form action="{{ route('certification.logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="btn btn-danger px-4 fw-bold">
+                <button type="submit" class="btn btn-danger px-4 fw-bold mb-4">
                     <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
                 </button>
             </form>

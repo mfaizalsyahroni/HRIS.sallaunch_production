@@ -43,10 +43,10 @@
 
 <body>
     <div class="box">
-        <h1>CERTIFICATE OF COMPLETION</h1>
+        <h1>{{ $cert->module->certificate_title_label }}</h1>
         <h2>This certifies that</h2>
 
-        <div class="name">{{ $cert->worker->fullname }}</div>
+        <div class="name">{{ $cert->fullname }}</div>
 
         <p>Employee ID: {{ $cert->employee_id }}</p>
 

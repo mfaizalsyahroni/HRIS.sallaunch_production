@@ -46,7 +46,7 @@
                 @if ($workerStatus === 'not_started')
                     <span class="badge bg-secondary fs-6 px-3 py-2">⬜ Not Started</span>
                 @elseif ($workerStatus === 'in_progress')
-                    <span class="badge text-dark fs-6 px-3 py-2"  style="background-color: #f0f4f8;">🔄 In Progress</span>
+                    <span class="badge text-dark fs-6 px-3 py-2" style="background-color: #f0f4f8;">🔄 In Progress</span>
                 @elseif ($workerStatus === 'completed')
                     <span class="badge bg-success fs-6 px-3 py-2">✅ Completed</span>
                 @endif
@@ -68,7 +68,20 @@
 
                         <!-- Body -->
                         <div class="card-body d-flex flex-column">
+
                             <span class="badge bg-secondary mb-2">{{ $module->category }}</span>
+                            <!-- Certificate Type Badge -->
+                            @php
+                                $certColors = [
+                                    'competency' => 'bg-primary',
+                                    'proficiency' => 'bg-warning text-dark',
+                                    'mastery' => 'bg-danger',
+                                ];
+                                $certColor = $certColors[$module->certificate_title] ?? 'bg-secondary';
+                            @endphp
+                            <span class="badge {{ $certColor }} mb-2">
+                                🎓 {{ $module->certificate_title_label }}
+                            </span>
                             <h5 class="fw-bold">{{ $module->module_name }}</h5>
                             <p class="text-muted small">{{ $module->description }}</p>
                             <p class="mb-2">⏱ Duration: {{ $module->duration }}</p>

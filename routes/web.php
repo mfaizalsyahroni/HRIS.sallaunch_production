@@ -413,6 +413,10 @@ Route::post('/learnigplan/logout', [LearningplanController::class, 'Logout'])
 
 //ADMIN    
 Route::match(['get', 'post'], 'admin', [LearningplanController::class, 'adminDashboard'])->name('learningplan.admin.dashboard');
+
+//Management Trainee
+Route::get('/learningplan/management-trainee', [LearningplanController::class, 'managementTrainee'])->name('learningplan.mt.course_setup');
+
 Route::get('admin/delete/{id}', [LearningplanController::class, 'deleteModule'])->name('learningplan.admin.delete');
 
 
@@ -425,6 +429,7 @@ Route::prefix('certification')->group(function () {
     Route::post('/logout', [CertificationController::class, 'logout'])->name('certification.logout');
 
     // Dashboard per Role
+    Route::post('/admin/broadcast', [CertificationController::class, 'broadcast'])->name('admin.broadcast');
     Route::get('/staff', [CertificationController::class, 'staff'])->name('certification.staff');
     Route::get('/mt', [CertificationController::class, 'mtView'])->name('certification.mt');
     Route::get('/admin', [CertificationController::class, 'adminDashboard'])->name('certification.admin.dashboard');

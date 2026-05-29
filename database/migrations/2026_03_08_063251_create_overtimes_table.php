@@ -19,7 +19,7 @@ return new class extends Migration {
                 ->onDelete('cascade');
 
             // ✅ SNAPSHOT DATA WORKER (Payroll Safe)
-            $table->string('employee_id');
+            $table->string('employee_id'); //must integer here
             $table->string('fullname');
 
             // ✅ DATA LEMBUR

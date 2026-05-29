@@ -20,6 +20,9 @@ return new class extends Migration {
 
             $table->text('description');
 
+            $table->enum('certificate_title', ['competency', 'proficiency', 'mastery'])
+                ->default('competency');
+
             $table->timestamps();
         });
     }

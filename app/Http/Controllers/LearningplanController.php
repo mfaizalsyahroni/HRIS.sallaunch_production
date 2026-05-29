@@ -30,6 +30,11 @@ class LearningplanController extends Controller
             return redirect()->route('learningplan.admin.dashboard');
         }
 
+        if ($request->employee_id == 111 && $request->password === 'pw11') {
+            session(['verified_worker' => 'Management_Trainee']);
+            return redirect()->route('learningplan.mt.course_setup');
+        }
+
         // Staff login
         $worker = Worker::where('employee_id', $request->employee_id)->first();
         if (!$worker || !Hash::check($request->password, $worker->password)) {
@@ -144,23 +149,33 @@ class LearningplanController extends Controller
                 'youtube_id' => 'required|string',
                 'duration' => 'required|string',
                 'description' => 'nullable|string',
+                'certificate_title' => 'required|in:competency,proficiency,mastery',
             ]);
+
+
 
             if ($request->module_id) {
                 $module = LearningModule::find($request->module_id);
                 $module->update($request->only('module_name', 'category', 'youtube_id', 'duration', 'description'));
+
+                return redirect()->route('learningplan.admin.dashboard')
+                    ->with('updated', 'Module updated successfully!');
             } else {
-                LearningModule::create($request->only('module_name', 'category', 'youtube_id', 'duration', 'description'));
+                LearningModule::create($request->only('module_name', 'category', 'youtube_id', 'duration', 'description', 'certificate_title'));
             }
 
             return redirect()->route('learningplan.admin.dashboard')
-                ->with('success', 'Module saved successfully!');
+                ->with('created', 'New module added successfully');
         }
 
         $modules = LearningModule::orderBy('id', 'asc')->get();
         $totalStaff = Worker::count();
         $totalModules = LearningModule::count();
-        $totalFeedback = LearningProgress::count();
+
+
+        $totalFeedback = LearningProgress::where('status', 'completed')
+            ->distinct('worker_id')
+            ->count('worker_id');
 
         return view('learningplan.admin.dashboard', compact('modules', 'totalStaff', 'totalModules', 'totalFeedback'));
     }
@@ -174,7 +189,23 @@ class LearningplanController extends Controller
 
         LearningModule::destroy($id);
         return redirect()->route('learningplan.admin.dashboard')
-            ->with('success', 'Module deleted successfully!');
+            ->with('deleted', 'Module deleted successfully!');
+    }
+
+
+    public function managementTrainee()
+    {
+        $workerSession = session('verified_worker');
+        if (!$workerSession || $workerSession !== 'Management_Trainee') {
+            return redirect()->route('learningplan.verify')
+                ->withErrors(['Please verify first']);
+        }
+
+        $modules = LearningModule::orderBy('certificate_title')->orderBy('id')->get();
+
+        $grouped = $modules->groupBy('certificate_title');
+
+        return view('learningplan.mt.course_setup', compact('modules', 'grouped'));
     }
 
     public function Logout(Request $request)
